@@ -1,0 +1,2459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1B3044">
+    <meta name="apple-mobile-web-app-title" content="Kiki Midwifery">
+    <title>Kiki Midwifery Case Log</title>
+
+    <!-- iOS Home Screen Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="apple-touch-icon.png">
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <!-- Firebase SDK (loaded dynamically only when configured) -->
+
+    <style>
+        /* ======================== CSS VARIABLES ======================== */
+        :root {
+            --bg-primary: #FAF6F0;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #F0EBE3;
+            --bg-glass: rgba(255,255,255,0.7);
+            --text-primary: #1B3044;
+            --text-secondary: #5A6E7F;
+            --text-tertiary: #8A96A3;
+            --accent: #2A9D8F;
+            --accent-light: rgba(42,157,143,0.12);
+            --accent-gold: #D4A853;
+            --accent-gold-light: rgba(212,168,83,0.15);
+            --danger: #C2626A;
+            --danger-light: rgba(194,98,106,0.12);
+            --border: #E5DED3;
+            --shadow: 0 2px 12px rgba(27,48,68,0.06);
+            --shadow-lg: 0 8px 32px rgba(27,48,68,0.10);
+            --input-bg: #FFFFFF;
+            --chip-bg: #F0EBE3;
+            --chip-active: #2A9D8F;
+            --chip-active-text: #FFFFFF;
+            --nav-bg: rgba(255,255,255,0.92);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --chart-natural: #2A9D8F;
+            --chart-planned: #5B8FF9;
+            --chart-emergency: #F6BD16;
+            --chart-crash: #E76F51;
+            --chart-others: #9B8DFF;
+        }
+        html.dark {
+            --bg-primary: #0F1419;
+            --bg-secondary: #1A2230;
+            --bg-tertiary: #222E3C;
+            --bg-glass: rgba(26,34,48,0.85);
+            --text-primary: #E8E2D9;
+            --text-secondary: #9AACBD;
+            --text-tertiary: #637586;
+            --accent: #35C4B5;
+            --accent-light: rgba(53,196,181,0.15);
+            --accent-gold: #E8C064;
+            --accent-gold-light: rgba(232,192,100,0.15);
+            --danger: #E07A82;
+            --danger-light: rgba(224,122,130,0.15);
+            --border: #2A3848;
+            --shadow: 0 2px 12px rgba(0,0,0,0.2);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
+            --input-bg: #1A2230;
+            --chip-bg: #222E3C;
+            --chip-active: #35C4B5;
+            --chip-active-text: #0F1419;
+            --nav-bg: rgba(15,20,25,0.92);
+            --chart-natural: #35C4B5;
+            --chart-planned: #6B9BFF;
+            --chart-emergency: #FFD04A;
+            --chart-crash: #FF8E6E;
+            --chart-others: #AFA0FF;
+        }
+
+        /* ======================== RESET & BASE ======================== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 16px; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            max-width: 100vw;
+        }
+
+        /* ======================== TYPOGRAPHY ======================== */
+        h1, h2, h3 { font-family: 'Crimson Text', serif; font-weight: 700; }
+        h1 { font-size: 1.75rem; letter-spacing: -0.02em; }
+        h2 { font-size: 1.35rem; letter-spacing: -0.01em; }
+        h3 { font-size: 1.15rem; }
+
+        /* ======================== SCREENS ======================== */
+        .screen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+        .screen.active { display: flex; }
+
+        /* ======================== SETUP SCREEN ======================== */
+        #setup-screen {
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+            background: linear-gradient(160deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%);
+        }
+        #setup-screen .setup-icon {
+            width: 80px; height: 80px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+        #setup-screen h1 { margin-bottom: 12px; }
+        #setup-screen p { color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; max-width: 500px; }
+        .setup-code {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            max-width: 500px;
+            width: 100%;
+            overflow-x: auto;
+            white-space: pre;
+            margin-bottom: 20px;
+        }
+
+        /* ======================== LOGIN SCREEN ======================== */
+        #login-screen {
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(42,157,143,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(212,168,83,0.06) 0%, transparent 50%),
+                var(--bg-primary);
+        }
+        .login-brand {
+            margin-bottom: 48px;
+        }
+        .login-brand .brand-icon {
+            width: 88px; height: 88px;
+            background: linear-gradient(135deg, var(--accent) 0%, #1B7A6F 100%);
+            border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.4rem;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(42,157,143,0.25);
+        }
+        .login-brand h1 { font-size: 2rem; margin-bottom: 6px; }
+        .login-brand p { color: var(--text-secondary); font-size: 1rem; }
+        .btn-google {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 32px;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+        .btn-google:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+        .btn-google:active { transform: scale(0.97); }
+        .btn-google img { width: 22px; height: 22px; }
+        .login-error {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: var(--danger-light);
+            color: var(--danger);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* ======================== APP LAYOUT ======================== */
+        #app {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+        #app.active { display: flex; }
+
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: var(--nav-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .app-header .header-left {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .app-header .header-logo {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--accent) 0%, #1B7A6F 100%);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1rem;
+        }
+        .app-header h1 { font-size: 1.25rem; }
+        .btn-signout {
+            background: none; border: none; cursor: pointer;
+            color: var(--text-tertiary); font-size: 1.1rem;
+            padding: 8px; border-radius: 8px;
+            transition: color 0.2s;
+        }
+        .btn-signout:hover { color: var(--danger); }
+
+        .app-main {
+            flex: 1;
+            padding-bottom: 80px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* ======================== BOTTOM NAV ======================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            z-index: 50;
+            background: var(--nav-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+        }
+        .nav-item {
+            flex: 1;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 3px;
+            padding: 8px 4px;
+            background: none; border: none;
+            color: var(--text-tertiary);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-item i { font-size: 1.2rem; transition: transform 0.2s; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item.active i { transform: scale(1.1); }
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%) scaleX(0);
+            width: 32px; height: 3px;
+            background: var(--accent);
+            border-radius: 0 0 4px 4px;
+            transition: transform 0.2s;
+        }
+        .nav-item.active::after { transform: translateX(-50%) scaleX(1); }
+
+        /* ======================== TAB CONTENT ======================== */
+        .tab-content { display: none; padding: 16px; animation: fadeIn 0.25s ease; overflow-x: hidden; max-width: 100%; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ======================== FORM STYLES ======================== */
+        .form-section {
+            margin-bottom: 24px;
+        }
+        .form-section-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-light);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .form-section-title i {
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+            max-width: 100%;
+        }
+        .form-row.single { grid-template-columns: 1fr; }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+            overflow: hidden;
+        }
+        .form-group label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 14px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            color: var(--text-primary);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235A6E7F' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 28px;
+            text-overflow: ellipsis;
+        }
+
+        /* ======================== CHIP / TOGGLE BUTTONS ======================== */
+        .chip-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+            max-width: 100%;
+        }
+        .chip {
+            padding: 8px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            background: var(--chip-bg);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .chip:hover { border-color: var(--accent); }
+        .chip.active {
+            background: var(--chip-active);
+            color: var(--chip-active-text);
+            border-color: var(--chip-active);
+        }
+        .chip-danger.active {
+            background: var(--danger);
+            color: #fff;
+            border-color: var(--danger);
+        }
+
+        /* ======================== DYNAMIC LIST (Co-workers) ======================== */
+        .dynamic-list-item {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+        .dynamic-list-item input,
+        .dynamic-list-item select {
+            padding: 10px 12px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .dynamic-list-item input { flex: 1; min-width: 0; }
+        .dynamic-list-item select {
+            flex: 0 0 auto;
+            width: 76px;
+            padding-right: 8px;
+            text-align: center;
+            background-image: none;
+        }
+        .dynamic-list-item input:focus,
+        .dynamic-list-item select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+        .job-other-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-top: 6px;
+            transition: border-color 0.2s;
+        }
+        .job-other-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+        .btn-remove-row {
+            width: 38px; height: 38px;
+            background: var(--danger-light);
+            border: none;
+            border-radius: 8px;
+            color: var(--danger);
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 1px;
+            transition: background 0.2s;
+        }
+        .btn-remove-row:hover { background: var(--danger); color: #fff; }
+        .btn-add-row {
+            display: inline-flex;
+            align-items: center; gap: 6px;
+            padding: 8px 16px;
+            background: var(--accent-light);
+            border: 1.5px dashed var(--accent);
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-add-row:hover { background: var(--accent); color: #fff; }
+
+        /* ======================== PRIMARY BUTTON ======================== */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent) 0%, #1B7A6F 100%);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(42,157,143,0.3);
+            letter-spacing: 0.02em;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(42,157,143,0.4); }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled {
+            opacity: 0.5; cursor: not-allowed; transform: none;
+            box-shadow: none;
+        }
+
+        /* ======================== HISTORY TAB ======================== */
+        .history-header {
+            display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-box i {
+            position: absolute;
+            left: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+        .case-count {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+        }
+
+        /* ======================== CASE CARD ======================== */
+        .case-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+        .case-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+        .case-card:active { transform: scale(0.99); }
+        .case-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .case-card-date {
+            font-size: 0.82rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+        }
+        .case-type-badge {
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .badge-natural { background: rgba(42,157,143,0.15); color: var(--chart-natural); }
+        .badge-planned { background: rgba(91,143,249,0.15); color: var(--chart-planned); }
+        .badge-emergency { background: rgba(246,189,22,0.15); color: #C49600; }
+        html.dark .badge-emergency { color: var(--chart-emergency); }
+        .badge-crash { background: rgba(231,111,81,0.15); color: var(--chart-crash); }
+        .badge-others { background: rgba(155,141,255,0.15); color: var(--chart-others); }
+
+        .case-card-number {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .case-card-meta {
+            display: flex; flex-wrap: wrap; gap: 12px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+        .case-card-meta span {
+            display: flex; align-items: center; gap: 4px;
+        }
+        .case-card-meta i { font-size: 0.75rem; color: var(--text-tertiary); }
+        .condition-tag {
+            background: var(--danger-light);
+            color: var(--danger);
+            padding: 2px 8px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .condition-tag i { color: var(--danger); font-size: 0.7rem; }
+        .no-conditions {
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-tertiary);
+        }
+        .empty-state i { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
+        .empty-state p { font-size: 1rem; }
+
+        /* ======================== ANALYSIS TAB ======================== */
+        .period-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .period-btn {
+            padding: 8px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            background: var(--bg-secondary);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .period-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .stat-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .stat-card .stat-value {
+            font-family: 'Crimson Text', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.1;
+        }
+        .stat-card .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 4px;
+        }
+        .chart-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .chart-container h3 {
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        .chart-container canvas {
+            max-height: 280px;
+        }
+
+        /* ======================== MODAL ======================== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            animation: fadeInBg 0.2s ease;
+        }
+        .modal-overlay.active { display: flex; align-items: flex-end; justify-content: center; }
+        @keyframes fadeInBg { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-sheet {
+            background: var(--bg-primary);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 600px;
+            max-height: 92vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            padding: 0;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-handle {
+            width: 40px; height: 4px;
+            background: var(--border);
+            border-radius: 4px;
+            margin: 12px auto 0;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-header h2 { font-size: 1.2rem; }
+        .modal-close {
+            width: 36px; height: 36px;
+            background: var(--bg-tertiary);
+            border: none; border-radius: 50%;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .modal-close:hover { background: var(--danger-light); color: var(--danger); }
+        .modal-body { padding: 20px; }
+        .modal-actions {
+            display: flex; gap: 10px;
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+        }
+        .btn-modal {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-edit { background: var(--accent-light); color: var(--accent); }
+        .btn-edit:hover { background: var(--accent); color: #fff; }
+        .btn-delete { background: var(--danger-light); color: var(--danger); }
+        .btn-delete:hover { background: var(--danger); color: #fff; }
+
+        /* Detail rows */
+        .detail-group { margin-bottom: 16px; }
+        .detail-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        .detail-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .detail-chip {
+            padding: 4px 10px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .detail-chip.danger {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        .detail-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            max-width: 100%;
+            margin-bottom: 12px;
+        }
+
+        /* ======================== CONFIRM DIALOG ======================== */
+        .confirm-dialog {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .confirm-dialog.active { display: flex; }
+        .confirm-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 28px;
+            max-width: 340px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: fadeIn 0.2s ease;
+        }
+        .confirm-box h3 { margin-bottom: 8px; }
+        .confirm-box p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; }
+        .confirm-btns { display: flex; gap: 10px; }
+        .confirm-btns button {
+            flex: 1;
+            padding: 12px;
+            border: none; border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .confirm-cancel { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .confirm-cancel:hover { background: var(--border); }
+        .confirm-ok { background: var(--danger); color: #fff; }
+        .confirm-ok:hover { opacity: 0.9; }
+
+        /* ======================== TOAST ======================== */
+        #toast-container {
+            position: fixed;
+            top: 16px;
+            left: 50%; transform: translateX(-50%);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+            pointer-events: auto;
+            white-space: nowrap;
+        }
+        .toast-success { background: var(--accent); color: #fff; }
+        .toast-error { background: var(--danger); color: #fff; }
+        .toast-info { background: var(--text-primary); color: var(--bg-primary); }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-8px); } }
+
+        /* ======================== LOADING SPINNER ======================== */
+        .spinner {
+            display: inline-block;
+            width: 20px; height: 20px;
+            border: 2.5px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-tertiary);
+        }
+        .loading-state .spinner { width: 32px; height: 32px; margin-bottom: 12px; }
+
+        /* ======================== SCROLL ======================== */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* ======================== EXPORT BTN ======================== */
+        .btn-export {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px;
+            background: var(--accent-gold-light);
+            border: 1.5px solid var(--accent-gold);
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .btn-export:hover { background: var(--accent-gold); color: #fff; }
+
+        /* Manage Roster button */
+        .btn-manage-roster {
+            background: none; border: 1.5px solid var(--accent);
+            border-radius: 50px; padding: 4px 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem; font-weight: 700;
+            color: var(--accent); cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .btn-manage-roster:hover { background: var(--accent); color: #fff; }
+
+        /* Colleagues modal list */
+        .colleague-add-form {
+            display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+        }
+        .colleague-add-form input {
+            flex: 1; min-width: 100px;
+            padding: 10px 12px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+        .colleague-add-form input:focus {
+            outline: none; border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+        .colleague-add-form button {
+            padding: 10px 16px;
+            background: var(--accent); color: #fff; border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem; font-weight: 700;
+            cursor: pointer; transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+        .colleague-add-form button:hover { opacity: 0.85; }
+        .colleague-item {
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 10px;
+            padding: 12px 14px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+        }
+        .colleague-item-info { flex: 1; min-width: 0; }
+        .colleague-item-name {
+            font-weight: 700; font-size: 0.95rem;
+            color: var(--text-primary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .colleague-item-role {
+            font-size: 0.8rem; color: var(--text-tertiary);
+        }
+        .colleague-item .btn-remove-row {
+            width: 32px; height: 32px;
+            font-size: 0.8rem;
+        }
+        .colleagues-empty {
+            text-align: center; padding: 24px;
+            color: var(--text-tertiary); font-size: 0.9rem;
+        }
+
+        /* Mode badge */
+        .mode-badge {
+            padding: 3px 9px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 50px;
+            background: var(--accent-gold-light);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== SETUP SCREEN ==================== -->
+    <div id="setup-screen" class="screen">
+        <div class="setup-icon"><i class="fa-solid fa-gear"></i></div>
+        <h1>Setup Required</h1>
+        <p>To use Kiki Midwifery Case Log, you need to configure Firebase. Open <strong>index.html</strong> and update the <code>CONFIG</code> object at the top of the <code>&lt;script&gt;</code> section with your Firebase project details:</p>
+        <div class="setup-code">const CONFIG = {
+  firebase: {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  },
+  allowedEmail: "your-email@gmail.com"
+};</div>
+        <p style="font-size:0.85rem;">See the HTML comments in the source code for step-by-step Firebase setup instructions.</p>
+    </div>
+
+    <!-- ==================== LOGIN SCREEN ==================== -->
+    <div id="login-screen" class="screen">
+        <div class="login-brand">
+            <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+            <h1>Kiki Midwifery Case Log</h1>
+            <p>Your personal birth case journal</p>
+        </div>
+        <button class="btn-google" id="btn-google-signin">
+            <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+            Sign in with Google
+        </button>
+        <div class="login-error" id="login-error"></div>
+    </div>
+
+    <!-- ==================== MAIN APP ==================== -->
+    <div id="app">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="header-logo"><i class="fa-solid fa-heart-pulse"></i></div>
+                <h1>Kiki Midwifery Case Log</h1>
+                <span class="mode-badge" id="mode-badge" style="display:none;">Local</span>
+            </div>
+            <button class="btn-signout" id="btn-signout" title="Sign out" style="display:none;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </header>
+
+        <div class="app-main">
+            <!-- ========== NEW CASE TAB ========== -->
+            <div id="tab-new-case" class="tab-content active">
+                <form id="case-form" autocomplete="off">
+                    <!-- Case Info -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fa-solid fa-clipboard-list"></i> Case Information</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="case-date">Date</label>
+                                <input type="date" id="case-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="case-time">Time</label>
+                                <input type="time" id="case-time" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="case-number">Case Number</label>
+                                <input type="text" id="case-number" placeholder="e.g. HN-0042" value="HN" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="case-type">Type of Case</label>
+                                <select id="case-type" required>
+                                    <option value="">Select...</option>
+                                    <option value="Natural Delivery">Natural Delivery</option>
+                                    <option value="Planned C-section">Planned C-section</option>
+                                    <option value="Emergency C-section">Emergency C-section</option>
+                                    <option value="Crash C-section">Crash C-section</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patient Info -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fa-solid fa-user"></i> Patient &amp; Newborn</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="patient-age">Mother's Age</label>
+                                <input type="number" id="patient-age" min="10" max="65" placeholder="Years">
+                            </div>
+                            <div class="form-group">
+                                <label for="newborn-sex">Newborn Sex</label>
+                                <select id="newborn-sex">
+                                    <option value="">Select...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Ambiguous">Ambiguous</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newborn-weight">Birth Weight (g)</label>
+                                <input type="number" id="newborn-weight" min="200" max="7000" placeholder="e.g. 3200">
+                            </div>
+                            <div class="form-group" style="display:none;"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="apgar-1">Apgar 1 min</label>
+                                <input type="number" id="apgar-1" min="0" max="10" placeholder="0–10">
+                            </div>
+                            <div class="form-group">
+                                <label for="apgar-5">Apgar 5 min</label>
+                                <input type="number" id="apgar-5" min="0" max="10" placeholder="0–10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Conditions -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fa-solid fa-triangle-exclamation"></i> Clinical Conditions</div>
+                        <div class="chip-grid" id="events-grid"></div>
+                        <div class="form-group" style="margin-top:8px;">
+                            <label for="events-other">Other Conditions</label>
+                            <input type="text" id="events-other" placeholder="Add custom conditions, comma-separated">
+                        </div>
+                    </div>
+
+                    <!-- Procedures -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fa-solid fa-syringe"></i> Procedures Done</div>
+                        <div class="chip-grid" id="procedures-grid"></div>
+                        <div class="form-group" style="margin-top:8px;">
+                            <label for="procedures-other">Other Procedures</label>
+                            <input type="text" id="procedures-other" placeholder="Add custom procedures, comma-separated">
+                        </div>
+                    </div>
+
+                    <!-- Team -->
+                    <div class="form-section">
+                        <div class="form-section-title" style="justify-content:space-between;">
+                            <span><i class="fa-solid fa-user-group"></i> Team</span>
+                            <button type="button" class="btn-manage-roster" id="btn-manage-roster"><i class="fa-solid fa-address-book"></i> List</button>
+                        </div>
+                        <label style="font-size:0.82rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px;display:block;">Co-workers</label>
+                        <div id="coworkers-list"></div>
+                        <button type="button" class="btn-add-row" id="btn-add-coworker"><i class="fa-solid fa-plus"></i> Add Co-worker</button>
+
+                        <div style="margin-top:16px;">
+                            <label style="font-size:0.82rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px;display:block;">Supervisor</label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" id="supervisor-name" placeholder="Name, Rank" list="colleague-names" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <select id="supervisor-duty">
+                                        <option value="">Job...</option>
+                                        <option value="上枱">上枱</option>
+                                        <option value="大草">大草</option>
+                                        <option value="細草">細草</option>
+                                        <option value="執仔">執仔</option>
+                                        <option value="救仔">救仔</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="text" id="supervisor-duty-other" class="job-other-input" placeholder="Specify other job..." style="display:none;">
+                        </div>
+                    </div>
+
+                    <!-- Datalists for autocomplete -->
+                    <datalist id="colleague-names"></datalist>
+                    <datalist id="common-duties">
+                        <option value="Midwife"></option>
+                        <option value="Obstetrician"></option>
+                        <option value="Anesthetist"></option>
+                        <option value="Nurse"></option>
+                        <option value="Registrar"></option>
+                        <option value="Resident"></option>
+                        <option value="Consultant"></option>
+                        <option value="Student Midwife"></option>
+                        <option value="Scrub Nurse"></option>
+                        <option value="Circulating Nurse"></option>
+                        <option value="Pediatrician"></option>
+                        <option value="Neonatologist"></option>
+                    </datalist>
+
+                    <!-- Follow-up -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fa-solid fa-list-check"></i> Follow-up Actions</div>
+                        <div class="form-group">
+                            <textarea id="follow-up" placeholder="Note any required follow-up actions..."></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="btn-submit-case">
+                        <i class="fa-solid fa-floppy-disk"></i> &nbsp;Save Case
+                    </button>
+                </form>
+            </div>
+
+            <!-- ========== HISTORY TAB ========== -->
+            <div id="tab-history" class="tab-content">
+                <div class="history-header">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="search-input" placeholder="Search by case #, type, or date...">
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span class="case-count" id="case-count"></span>
+                        <a class="btn-export" id="btn-export-csv" href="#" style="display:none;"><i class="fa-solid fa-download"></i> Export CSV</a>
+                    </div>
+                </div>
+                <div id="history-list"></div>
+            </div>
+
+            <!-- ========== ANALYSIS TAB ========== -->
+            <div id="tab-analysis" class="tab-content">
+                <div class="period-selector" id="period-selector">
+                    <button class="period-btn" data-range="week">Past Week</button>
+                    <button class="period-btn" data-range="month">Past Month</button>
+                    <button class="period-btn active" data-range="quarter">Past 3 Months</button>
+                    <button class="period-btn" data-range="year">Past Year</button>
+                    <button class="period-btn" data-range="all">All Time</button>
+                </div>
+
+                <div class="stat-cards" id="stat-cards">
+                    <div class="stat-card"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Cases</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-natural">0</div><div class="stat-label">Natural</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-csection">0</div><div class="stat-label">C-sections</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-avg-weight">—</div><div class="stat-label">Avg Weight (g)</div></div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Case Type Distribution</h3>
+                    <canvas id="chart-types"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Monthly Trend</h3>
+                    <canvas id="chart-trend"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-tab="tab-new-case">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>New Case</span>
+            </button>
+            <button class="nav-item" data-tab="tab-history">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>History</span>
+            </button>
+            <button class="nav-item" data-tab="tab-analysis">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Analysis</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ==================== CASE DETAIL MODAL ==================== -->
+    <div class="modal-overlay" id="case-detail-modal">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h2 id="detail-title">Case Details</h2>
+                <button class="modal-close" id="detail-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="detail-body"></div>
+            <div class="modal-actions">
+                <button class="btn-modal btn-edit" id="detail-edit"><i class="fa-solid fa-pen"></i> Edit</button>
+                <button class="btn-modal btn-delete" id="detail-delete"><i class="fa-solid fa-trash"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CONFIRM DIALOG ==================== -->
+    <div class="confirm-dialog" id="confirm-dialog">
+        <div class="confirm-box">
+            <h3 id="confirm-title">Confirm</h3>
+            <p id="confirm-message">Are you sure?</p>
+            <div class="confirm-btns">
+                <button class="confirm-cancel" id="confirm-cancel">Cancel</button>
+                <button class="confirm-ok" id="confirm-ok">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== COLLEAGUES MODAL ==================== -->
+    <div class="modal-overlay" id="colleagues-modal">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h2>Colleague Roster</h2>
+                <button class="modal-close" id="colleagues-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="colleague-add-form">
+                    <input type="text" id="new-col-name" placeholder="Name">
+                    <input type="text" id="new-col-role" placeholder="Rank" list="common-duties" autocomplete="off">
+                    <button type="button" id="btn-add-colleague"><i class="fa-solid fa-plus"></i> Add</button>
+                </div>
+                <div id="colleagues-manage-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TOAST ==================== -->
+    <div id="toast-container"></div>
+
+<script>
+ 
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║                 CONFIGURATION — EDIT BELOW                      ║
+// ║                                                                  ║
+// ║  1. Create a Firebase project at https://console.firebase.google.com  ║
+// ║  2. Enable "Google" sign-in under Authentication > Sign-in method     ║
+// ║  3. Create a Firestore Database (start in production mode)            ║
+// ║  4. Add your GitHub Pages domain to Authentication > Settings >       ║
+// ║     Authorized domains                                                ║
+// ║  5. Copy your web app config below                                    ║
+// ║  6. Set allowedEmail to YOUR Gmail address                            ║
+// ║                                                                       ║
+// ║  Firestore Security Rules (paste in Firebase Console):                ║
+// ║  rules_version = '2';                                                 ║
+// ║  service cloud.firestore {                                            ║
+// ║    match /databases/{database}/documents {                            ║
+// ║      match /cases/{caseId} {                                          ║
+// ║        allow read, write: if request.auth != null                     ║
+// ║          && request.auth.token.email == 'YOUR_EMAIL@gmail.com';       ║
+// ║      }                                                                ║
+// ║    }                                                                  ║
+// ║  }                                                                    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+const CONFIG = {
+    firebase: {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    },
+    allowedEmail: "your-email@gmail.com"
+};
+
+// ======================== PROCEDURES & EVENTS ========================
+const PROCEDURES = [
+    "Episiotomy", "Perineal Repair", "Vacuum Extraction",
+    "Forceps Delivery", "Manual Placenta Removal", "IV Cannulation",
+    "Catheterization", "CTG Monitoring", "Amniotomy (ARM)",
+    "Oxytocin Administration", "Epidural Assistance",
+    "Neonatal Resuscitation", "Cord Blood Collection",
+    "Blood Transfusion", "Fundal Pressure"
+];
+
+const SPECIAL_EVENTS = [
+    "Postpartum Haemorrhage", "Shoulder Dystocia", "Cord Prolapse",
+    "Meconium Stained Liquor", "Fetal Distress", "Maternal Collapse",
+    "NICU Admission", "Retained Placenta", "Pre-eclampsia / Eclampsia",
+    "Birth Injury", "Uterine Rupture", "Stillbirth"
+];
+
+const JOB_OPTIONS = ['上枱', '大草', '細草', '執仔', '救仔', '其他'];
+
+// ======================== DARK MODE ========================
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.classList.add('dark');
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+    if (event.matches) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+});
+
+// ======================== STATE ========================
+let db, auth;
+let allCases = [];
+let editingCaseId = null;
+let currentDetailCase = null;
+let confirmCallback = null;
+let typeChart = null;
+let trendChart = null;
+let localIdCounter = 0;
+let allColleagues = [];
+const useFirebase = isConfigured();
+
+// ======================== HELPERS ========================
+function $(id) { return document.getElementById(id); }
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = $(id);
+    if (el) el.classList.add('active');
+    const app = $('app');
+    if (id === 'app-show') {
+        app.classList.add('active');
+    } else {
+        app.classList.remove('active');
+    }
+}
+
+function showToast(message, type) {
+    type = type || 'info';
+    const container = $('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3200);
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function getDateNDaysAgo(n) {
+    const d = new Date();
+    d.setDate(d.getDate() - n);
+    return d.toISOString().split('T')[0];
+}
+
+function getTodayStr() {
+    return new Date().toISOString().split('T')[0];
+}
+
+function getNowTime() {
+    const n = new Date();
+    return n.toTimeString().slice(0, 5);
+}
+
+function getCaseTypeBadgeClass(type) {
+    const t = (type || '').toLowerCase();
+    if (t.includes('natural')) return 'badge-natural';
+    if (t.includes('planned')) return 'badge-planned';
+    if (t.includes('emergency')) return 'badge-emergency';
+    if (t.includes('crash')) return 'badge-crash';
+    return 'badge-others';
+}
+
+// ======================== CHECK CONFIG ========================
+function isConfigured() {
+    return CONFIG.firebase.apiKey && !CONFIG.firebase.apiKey.startsWith('YOUR_');
+}
+
+// ======================== INDEXEDDB (Local Persistence) ========================
+const IDB = {
+    DB_NAME: 'KikiMidwiferyCaseLogDB',
+    CASES: 'cases',
+    COLLEAGUES: 'colleagues',
+    VER: 2,
+    _open() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open(this.DB_NAME, this.VER);
+            req.onupgradeneeded = (e) => {
+                const idb = e.target.result;
+                if (!idb.objectStoreNames.contains(this.CASES)) {
+                    idb.createObjectStore(this.CASES, { keyPath: 'id' });
+                }
+                if (!idb.objectStoreNames.contains(this.COLLEAGUES)) {
+                    idb.createObjectStore(this.COLLEAGUES, { keyPath: 'id' });
+                }
+            };
+            req.onsuccess = (e) => resolve(e.target.result);
+            req.onerror = (e) => reject(e.target.error);
+        });
+    },
+    _txGet(storeName) {
+        return this._open().then(idb => new Promise((resolve, reject) => {
+            const tx = idb.transaction(storeName, 'readonly');
+            const store = tx.objectStore(storeName);
+            const req = store.getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = (e) => reject(e.target.error);
+        }));
+    },
+    _txPut(storeName, record) {
+        return this._open().then(idb => new Promise((resolve, reject) => {
+            const tx = idb.transaction(storeName, 'readwrite');
+            const store = tx.objectStore(storeName);
+            const req = store.put(record);
+            req.onsuccess = () => resolve();
+            req.onerror = (e) => reject(e.target.error);
+        }));
+    },
+    _txDel(storeName, id) {
+        return this._open().then(idb => new Promise((resolve, reject) => {
+            const tx = idb.transaction(storeName, 'readwrite');
+            const store = tx.objectStore(storeName);
+            const req = store.delete(id);
+            req.onsuccess = () => resolve();
+            req.onerror = (e) => reject(e.target.error);
+        }));
+    },
+    // Cases
+    getAll() { return this._txGet(this.CASES); },
+    put(record) { return this._txPut(this.CASES, record); },
+    remove(id) { return this._txDel(this.CASES, id); },
+    // Colleagues
+    getAllColleagues() { return this._txGet(this.COLLEAGUES); },
+    putColleague(record) { return this._txPut(this.COLLEAGUES, record); },
+    removeColleague(id) { return this._txDel(this.COLLEAGUES, id); }
+};
+
+// ======================== DYNAMIC SCRIPT LOADER ========================
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = url;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+
+// ======================== INIT ========================
+async function initApp() {
+    // Setup UI components first (always needed)
+    setupForm();
+    setupNavigation();
+    setupHistory();
+    setupAnalysis();
+    setupModals();
+    setupColleaguesModal();
+    await loadColleagues();
+
+    if (useFirebase) {
+        // ---- FIREBASE MODE ----
+        try {
+            await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
+            await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js');
+            await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js');
+        } catch (_e) {
+            showToast('Failed to load Firebase SDK', 'error');
+            return;
+        }
+
+        firebase.initializeApp(CONFIG.firebase);
+        auth = firebase.auth();
+        db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                if (user.email.toLowerCase() === CONFIG.allowedEmail.toLowerCase()) {
+                    $('btn-signout').style.display = '';
+                    showScreen('app-show');
+                    loadAllCases();
+                } else {
+                    auth.signOut();
+                    $('login-error').textContent = 'Access denied. Only ' + CONFIG.allowedEmail + ' can use this app.';
+                    $('login-error').style.display = 'block';
+                    showScreen('login-screen');
+                    $('login-screen').classList.add('active');
+                }
+            } else {
+                showScreen('login-screen');
+                $('login-screen').classList.add('active');
+            }
+        });
+
+        auth.getRedirectResult().catch(() => {});
+
+        $('btn-google-signin').addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+            try {
+                await auth.signInWithPopup(provider);
+            } catch (err) {
+                if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user') {
+                    try { await auth.signInWithRedirect(provider); }
+                    catch (e2) { showToast('Sign-in failed: ' + e2.message, 'error'); }
+                } else {
+                    $('login-error').textContent = err.message;
+                    $('login-error').style.display = 'block';
+                }
+            }
+        });
+
+        $('btn-signout').addEventListener('click', () => auth.signOut());
+
+    } else {
+        // ---- LOCAL MODE (no Firebase) ----
+        $('mode-badge').style.display = '';
+        showScreen('app-show');
+        loadAllCases();
+    }
+}
+
+// ======================== NAVIGATION ========================
+function setupNavigation() {
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            const tab = $(btn.dataset.tab);
+            if (tab) tab.classList.add('active');
+
+            if (btn.dataset.tab === 'tab-analysis') {
+                updateAnalysis();
+            }
+        });
+    });
+}
+
+// ======================== FORM SETUP ========================
+function setupForm() {
+    // Set default date/time
+    $('case-date').value = getTodayStr();
+    $('case-time').value = getNowTime();
+
+    // Render procedure chips
+    const procGrid = $('procedures-grid');
+    PROCEDURES.forEach(proc => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'chip';
+        chip.textContent = proc;
+        chip.dataset.value = proc;
+        chip.addEventListener('click', () => chip.classList.toggle('active'));
+        procGrid.appendChild(chip);
+    });
+
+    // Render event chips
+    const evtGrid = $('events-grid');
+    SPECIAL_EVENTS.forEach(evt => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'chip chip-danger';
+        chip.textContent = evt;
+        chip.dataset.value = evt;
+        chip.addEventListener('click', () => chip.classList.toggle('active'));
+        evtGrid.appendChild(chip);
+    });
+
+    // Add first co-worker row
+    addCoworkerRow();
+
+    // Add co-worker button
+    $('btn-add-coworker').addEventListener('click', () => addCoworkerRow());
+
+    // Form submit
+    $('case-form').addEventListener('submit', handleFormSubmit);
+
+    // Supervisor job toggle
+    $('supervisor-duty').addEventListener('change', function() {
+        var isOther = $('supervisor-duty').value === '其他';
+        $('supervisor-duty-other').style.display = isOther ? 'block' : 'none';
+        if (!isOther) $('supervisor-duty-other').value = '';
+    });
+}
+
+function buildJobSelectHTML(selected) {
+    let html = '<option value="">Job</option>';
+    JOB_OPTIONS.forEach(j => {
+        html += '<option value="' + j + '"' + (selected === j ? ' selected' : '') + '>' + j + '</option>';
+    });
+    return html;
+}
+
+function parseJobDuty(duty) {
+    if (!duty) return { job: '', other: '' };
+    for (var i = 0; i < JOB_OPTIONS.length - 1; i++) {
+        if (duty === JOB_OPTIONS[i]) return { job: duty, other: '' };
+    }
+    if (duty === '其他') return { job: '其他', other: '' };
+    if (duty.startsWith('其他: ')) return { job: '其他', other: duty.slice(4) };
+    return { job: '其他', other: duty };
+}
+
+function getJobDutyValue(selectEl, otherEl) {
+    var job = selectEl.value;
+    if (job === '其他') {
+        var ot = (otherEl.value || '').trim();
+        return ot ? '其他: ' + ot : '其他';
+    }
+    return job;
+}
+
+function addCoworkerRow(name, duty) {
+    const list = $('coworkers-list');
+    const parsed = parseJobDuty(duty);
+    const row = document.createElement('div');
+    row.className = 'dynamic-list-item';
+    row.innerHTML =
+        '<input type="text" placeholder="Name, Rank" list="colleague-names" autocomplete="off" value="' + (name || '').replace(/"/g, '&quot;') + '">' +
+        '<select class="job-select">' + buildJobSelectHTML(parsed.job) + '</select>' +
+        '<button type="button" class="btn-remove-row"><i class="fa-solid fa-minus"></i></button>' +
+        '<input type="text" class="job-other-input" placeholder="Specify..." value="' + (parsed.other || '').replace(/"/g, '&quot;') + '" style="display:' + (parsed.job === '其他' ? 'block' : 'none') + ';">';
+    row.querySelector('.btn-remove-row').addEventListener('click', () => {
+        if (list.children.length > 1) {
+            row.remove();
+        } else {
+            row.querySelector('input').value = '';
+            row.querySelector('select').selectedIndex = 0;
+            var oi = row.querySelector('.job-other-input');
+            oi.value = ''; oi.style.display = 'none';
+        }
+    });
+    var jobSel = row.querySelector('.job-select');
+    var otherIn = row.querySelector('.job-other-input');
+    jobSel.addEventListener('change', () => {
+        otherIn.style.display = jobSel.value === '其他' ? 'block' : 'none';
+        if (jobSel.value !== '其他') otherIn.value = '';
+    });
+    list.appendChild(row);
+}
+
+function parseCommaList(str) {
+    return str.split(',').map(s => s.trim()).filter(s => s.length > 0);
+}
+
+function getFormData() {
+    const procedures = [];
+    $('procedures-grid').querySelectorAll('.chip.active').forEach(c => procedures.push(c.dataset.value));
+    const procOther = $('procedures-other').value.trim();
+    if (procOther) procedures.push(...parseCommaList(procOther));
+
+    const specialEvents = [];
+    $('events-grid').querySelectorAll('.chip.active').forEach(c => specialEvents.push(c.dataset.value));
+    const evtOther = $('events-other').value.trim();
+    if (evtOther) specialEvents.push(...parseCommaList(evtOther));
+
+    const coworkers = [];
+    $('coworkers-list').querySelectorAll('.dynamic-list-item').forEach(row => {
+        const n = row.querySelector('input[type="text"]').value.trim();
+        const jobSel = row.querySelector('.job-select');
+        const jobOther = row.querySelector('.job-other-input');
+        const d = getJobDutyValue(jobSel, jobOther);
+        if (n || d) coworkers.push({ name: n, duty: d });
+    });
+
+    return {
+        date: $('case-date').value,
+        time: $('case-time').value,
+        caseNumber: $('case-number').value.trim(),
+        caseType: $('case-type').value,
+        patientAge: $('patient-age').value ? parseInt($('patient-age').value, 10) : null,
+        newbornSex: $('newborn-sex').value,
+        newbornWeight: $('newborn-weight').value ? parseInt($('newborn-weight').value, 10) : null,
+        apgar1: $('apgar-1').value !== '' ? parseInt($('apgar-1').value, 10) : null,
+        apgar5: $('apgar-5').value !== '' ? parseInt($('apgar-5').value, 10) : null,
+        procedures: procedures,
+        specialEvents: specialEvents,
+        coworkers: coworkers,
+        supervisorName: $('supervisor-name').value.trim(),
+        supervisorDuty: getJobDutyValue($('supervisor-duty'), $('supervisor-duty-other')),
+        followUp: $('follow-up').value.trim()
+    };
+}
+
+function resetForm() {
+    $('case-form').reset();
+    $('case-date').value = getTodayStr();
+    $('case-time').value = getNowTime();
+    $('case-number').value = 'HN';
+    $('procedures-grid').querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+    $('events-grid').querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+    $('procedures-other').value = '';
+    $('events-other').value = '';
+
+    // Reset supervisor job select
+    $('supervisor-duty').selectedIndex = 0;
+    $('supervisor-duty-other').value = '';
+    $('supervisor-duty-other').style.display = 'none';
+
+    // Reset co-workers to one empty row
+    const list = $('coworkers-list');
+    list.innerHTML = '';
+    addCoworkerRow();
+
+    editingCaseId = null;
+    $('btn-submit-case').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> &nbsp;Save Case';
+}
+
+function populateForm(caseData) {
+    $('case-date').value = caseData.date || '';
+    $('case-time').value = caseData.time || '';
+    $('case-number').value = caseData.caseNumber || '';
+    $('case-type').value = caseData.caseType || '';
+    $('patient-age').value = caseData.patientAge != null ? caseData.patientAge : '';
+    $('newborn-sex').value = caseData.newbornSex || '';
+    $('newborn-weight').value = caseData.newbornWeight != null ? caseData.newbornWeight : '';
+    $('apgar-1').value = caseData.apgar1 != null ? caseData.apgar1 : '';
+    $('apgar-5').value = caseData.apgar5 != null ? caseData.apgar5 : '';
+    $('supervisor-name').value = caseData.supervisorName || '';
+    var supParsed = parseJobDuty(caseData.supervisorDuty);
+    $('supervisor-duty').value = supParsed.job;
+    $('supervisor-duty-other').value = supParsed.other;
+    $('supervisor-duty-other').style.display = supParsed.job === '其他' ? 'block' : 'none';
+    $('follow-up').value = caseData.followUp || '';
+
+    // Procedures — toggle chips and put non-standard items in free text
+    const knownProcs = new Set();
+    $('procedures-grid').querySelectorAll('.chip').forEach(c => {
+        knownProcs.add(c.dataset.value);
+        c.classList.toggle('active', (caseData.procedures || []).includes(c.dataset.value));
+    });
+    const customProcs = (caseData.procedures || []).filter(p => !knownProcs.has(p));
+    $('procedures-other').value = customProcs.join(', ');
+
+    // Clinical Conditions — toggle chips and put non-standard items in free text
+    const knownEvts = new Set();
+    $('events-grid').querySelectorAll('.chip').forEach(c => {
+        knownEvts.add(c.dataset.value);
+        c.classList.toggle('active', (caseData.specialEvents || []).includes(c.dataset.value));
+    });
+    const customEvts = (caseData.specialEvents || []).filter(ev => !knownEvts.has(ev));
+    $('events-other').value = customEvts.join(', ');
+
+    // Co-workers
+    const list = $('coworkers-list');
+    list.innerHTML = '';
+    if (caseData.coworkers && caseData.coworkers.length > 0) {
+        caseData.coworkers.forEach(cw => addCoworkerRow(cw.name, cw.duty));
+    } else {
+        addCoworkerRow();
+    }
+}
+
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    const data = getFormData();
+    const btn = $('btn-submit-case');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+    try {
+        if (useFirebase) {
+            // ---- Firebase save ----
+            if (editingCaseId) {
+                await db.collection('cases').doc(editingCaseId).update({
+                    ...data,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } else {
+                await db.collection('cases').add({
+                    ...data,
+                    userId: auth.currentUser.uid,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        } else {
+            // ---- Local save ----
+            if (editingCaseId) {
+                const idx = allCases.findIndex(c => c.id === editingCaseId);
+                if (idx >= 0) {
+                    allCases[idx] = { ...allCases[idx], ...data, updatedAt: new Date().toISOString() };
+                    try { await IDB.put(allCases[idx]); } catch (_e) { /* IDB optional */ }
+                }
+            } else {
+                const newCase = {
+                    ...data,
+                    id: 'local_' + Date.now() + '_' + (++localIdCounter),
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                allCases.unshift(newCase);
+                try { await IDB.put(newCase); } catch (_e) { /* IDB optional */ }
+            }
+        }
+        showToast(editingCaseId ? 'Case updated!' : 'Case saved!', 'success');
+        await autoAddNewColleaguesToRoster(data);
+        resetForm();
+        if (useFirebase) {
+            await loadAllCases();
+        } else {
+            renderHistory();
+            updateAnalysis();
+        }
+    } catch (err) {
+        showToast('Error saving: ' + err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> &nbsp;Save Case';
+    }
+}
+
+// ======================== DATA LOADING ========================
+async function loadAllCases() {
+    if (useFirebase) {
+        try {
+            const snapshot = await db.collection('cases')
+                .where('userId', '==', auth.currentUser.uid)
+                .orderBy('date', 'desc')
+                .orderBy('time', 'desc')
+                .get();
+            allCases = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (_err) {
+            try {
+                const snapshot = await db.collection('cases')
+                    .where('userId', '==', auth.currentUser.uid)
+                    .get();
+                allCases = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                sortCasesDesc();
+            } catch (err2) {
+                showToast('Error loading cases: ' + err2.message, 'error');
+                allCases = [];
+            }
+        }
+    } else {
+        // Local mode — load from IndexedDB
+        try {
+            allCases = await IDB.getAll();
+            sortCasesDesc();
+        } catch (_e) {
+            // IDB unavailable — keep in-memory array as-is
+        }
+    }
+    renderHistory();
+    updateAnalysis();
+}
+
+function sortCasesDesc() {
+    allCases.sort((a, b) => {
+        const da = (a.date || '') + (a.time || '');
+        const db2 = (b.date || '') + (b.time || '');
+        return db2.localeCompare(da);
+    });
+}
+
+// ======================== HISTORY ========================
+function setupHistory() {
+    $('search-input').addEventListener('input', renderHistory);
+}
+
+function renderHistory() {
+    const query = ($('search-input').value || '').toLowerCase();
+    const filtered = allCases.filter(c => {
+        if (!query) return true;
+        return (c.caseNumber || '').toLowerCase().includes(query)
+            || (c.caseType || '').toLowerCase().includes(query)
+            || (c.date || '').includes(query);
+    });
+
+    const list = $('history-list');
+    const countEl = $('case-count');
+    const exportBtn = $('btn-export-csv');
+    countEl.textContent = filtered.length + ' case' + (filtered.length !== 1 ? 's' : '');
+
+    if (filtered.length > 0) {
+        exportBtn.style.display = 'inline-flex';
+    } else {
+        exportBtn.style.display = 'none';
+    }
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>' +
+            (allCases.length === 0 ? 'No cases yet. Start by adding your first case!' : 'No cases match your search.') +
+            '</p></div>';
+        return;
+    }
+
+    let html = '';
+    filtered.forEach(c => {
+        const badgeClass = getCaseTypeBadgeClass(c.caseType);
+        html += '<div class="case-card" data-id="' + c.id + '">' +
+            '<div class="case-card-top">' +
+                '<span class="case-card-date">' + formatDate(c.date) + (c.time ? ' · ' + c.time : '') + '</span>' +
+                '<span class="case-type-badge ' + badgeClass + '">' + (c.caseType || 'N/A') + '</span>' +
+            '</div>' +
+            '<div class="case-card-number">' + (c.caseNumber || '—') + '</div>' +
+            '<div class="case-card-meta">' +
+                ((c.specialEvents && c.specialEvents.length > 0) ? c.specialEvents.map(function(ev) { return '<span class="condition-tag"><i class="fa-solid fa-triangle-exclamation"></i> ' + ev + '</span>'; }).join('') : '<span class="no-conditions">No conditions</span>') +
+            '</div>' +
+        '</div>';
+    });
+    list.innerHTML = html;
+
+    // Click handlers
+    list.querySelectorAll('.case-card').forEach(card => {
+        card.addEventListener('click', () => openCaseDetail(card.dataset.id));
+    });
+}
+
+// ======================== CSV EXPORT ========================
+function setupExport() {
+    $('btn-export-csv').addEventListener('click', (e) => {
+        e.preventDefault();
+        exportCSV();
+    });
+}
+
+function exportCSV() {
+    if (allCases.length === 0) return;
+    const headers = ['Date','Time','Case Number','Type','Mother\'s Age','Newborn Sex','Birth Weight (g)','Apgar 1min','Apgar 5min','Clinical Conditions','Procedures','Co-workers','Supervisor','Follow-up'];
+    const rows = allCases.map(c => [
+        c.date || '',
+        c.time || '',
+        c.caseNumber || '',
+        c.caseType || '',
+        c.patientAge != null ? c.patientAge : '',
+        c.newbornSex || '',
+        c.newbornWeight != null ? c.newbornWeight : '',
+        c.apgar1 != null ? c.apgar1 : '',
+        c.apgar5 != null ? c.apgar5 : '',
+        (c.specialEvents || []).join('; '),
+        (c.procedures || []).join('; '),
+        (c.coworkers || []).map(cw => cw.name + (cw.duty ? ' (' + cw.duty + ')' : '')).join('; '),
+        (c.supervisorName || '') + (c.supervisorDuty ? ' (' + c.supervisorDuty + ')' : ''),
+        c.followUp || ''
+    ]);
+
+    let csv = headers.map(h => '"' + h + '"').join(',') + '\n';
+    rows.forEach(row => {
+        csv += row.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n';
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'kiki_midwifery_cases_' + getTodayStr() + '.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('CSV exported!', 'success');
+}
+
+// ======================== CASE DETAIL MODAL ========================
+function setupModals() {
+    // Close detail modal
+    $('detail-close').addEventListener('click', closeDetailModal);
+    $('case-detail-modal').addEventListener('click', (e) => {
+        if (e.target === $('case-detail-modal')) closeDetailModal();
+    });
+
+    // Edit button
+    $('detail-edit').addEventListener('click', () => {
+        if (!currentDetailCase) return;
+        editingCaseId = currentDetailCase.id;
+        populateForm(currentDetailCase);
+        $('btn-submit-case').innerHTML = '<i class="fa-solid fa-pen"></i> &nbsp;Update Case';
+        closeDetailModal();
+        // Switch to new case tab
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelector('.nav-item[data-tab="tab-new-case"]').classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        $('tab-new-case').classList.add('active');
+        window.scrollTo(0, 0);
+    });
+
+    // Delete button
+    $('detail-delete').addEventListener('click', () => {
+        if (!currentDetailCase) return;
+        showConfirm('Delete Case', 'Are you sure you want to delete Case ' + (currentDetailCase.caseNumber || '') + '? This cannot be undone.', async () => {
+            try {
+                if (useFirebase) {
+                    await db.collection('cases').doc(currentDetailCase.id).delete();
+                } else {
+                    allCases = allCases.filter(c => c.id !== currentDetailCase.id);
+                    try { await IDB.remove(currentDetailCase.id); } catch (_e) { /* ok */ }
+                }
+                showToast('Case deleted', 'info');
+                closeDetailModal();
+                if (useFirebase) {
+                    await loadAllCases();
+                } else {
+                    renderHistory();
+                    updateAnalysis();
+                }
+            } catch (err) {
+                showToast('Error deleting: ' + err.message, 'error');
+            }
+        });
+    });
+
+    // Confirm dialog
+    $('confirm-cancel').addEventListener('click', closeConfirm);
+    $('confirm-ok').addEventListener('click', () => {
+        if (confirmCallback) confirmCallback();
+        closeConfirm();
+    });
+    $('confirm-dialog').addEventListener('click', (e) => {
+        if (e.target === $('confirm-dialog')) closeConfirm();
+    });
+
+    // CSV export
+    setupExport();
+}
+
+function openCaseDetail(caseId) {
+    const c = allCases.find(x => x.id === caseId);
+    if (!c) return;
+    currentDetailCase = c;
+    $('detail-title').textContent = 'Case ' + (c.caseNumber || '—');
+
+    let html = '<div class="detail-row">' +
+        '<div class="detail-group"><div class="detail-label">Date</div><div class="detail-value">' + formatDate(c.date) + '</div></div>' +
+        '<div class="detail-group"><div class="detail-label">Time</div><div class="detail-value">' + (c.time || '—') + '</div></div>' +
+    '</div>';
+
+    html += '<div class="detail-row">' +
+        '<div class="detail-group"><div class="detail-label">Type</div><div class="detail-value"><span class="case-type-badge ' + getCaseTypeBadgeClass(c.caseType) + '">' + (c.caseType || '—') + '</span></div></div>' +
+        '<div class="detail-group"><div class="detail-label">Mother\'s Age</div><div class="detail-value">' + (c.patientAge != null ? c.patientAge + ' years' : '—') + '</div></div>' +
+    '</div>';
+
+    html += '<div class="detail-row">' +
+        '<div class="detail-group"><div class="detail-label">Newborn Sex</div><div class="detail-value">' + (c.newbornSex || '—') + '</div></div>' +
+        '<div class="detail-group"><div class="detail-label">Birth Weight</div><div class="detail-value">' + (c.newbornWeight != null ? c.newbornWeight + ' g' : '—') + '</div></div>' +
+    '</div>';
+
+    html += '<div class="detail-row">' +
+        '<div class="detail-group"><div class="detail-label">Apgar 1 min</div><div class="detail-value">' + (c.apgar1 != null ? c.apgar1 : '—') + '</div></div>' +
+        '<div class="detail-group"><div class="detail-label">Apgar 5 min</div><div class="detail-value">' + (c.apgar5 != null ? c.apgar5 : '—') + '</div></div>' +
+    '</div>';
+
+    if (c.specialEvents && c.specialEvents.length > 0) {
+        html += '<div class="detail-group"><div class="detail-label">Clinical Conditions</div><div class="detail-chips">' +
+            c.specialEvents.map(ev => '<span class="detail-chip danger">' + ev + '</span>').join('') +
+        '</div></div>';
+    }
+
+    if (c.procedures && c.procedures.length > 0) {
+        html += '<div class="detail-group"><div class="detail-label">Procedures</div><div class="detail-chips">' +
+            c.procedures.map(p => '<span class="detail-chip">' + p + '</span>').join('') +
+        '</div></div>';
+    }
+
+    if (c.coworkers && c.coworkers.length > 0) {
+        html += '<div class="detail-group"><div class="detail-label">Co-workers</div><div class="detail-value">' +
+            c.coworkers.map(cw => '<strong>' + (cw.name || '—') + '</strong>' + (cw.duty ? ' — ' + cw.duty : '')).join('<br>') +
+        '</div></div>';
+    }
+
+    if (c.supervisorName) {
+        html += '<div class="detail-group"><div class="detail-label">Supervisor</div><div class="detail-value"><strong>' +
+            c.supervisorName + '</strong>' + (c.supervisorDuty ? ' — ' + c.supervisorDuty : '') +
+        '</div></div>';
+    }
+
+    if (c.followUp) {
+        html += '<div class="detail-group"><div class="detail-label">Follow-up Actions</div><div class="detail-value">' + c.followUp.replace(/\n/g, '<br>') + '</div></div>';
+    }
+
+    $('detail-body').innerHTML = html;
+    $('case-detail-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetailModal() {
+    $('case-detail-modal').classList.remove('active');
+    document.body.style.overflow = '';
+    currentDetailCase = null;
+}
+
+function showConfirm(title, message, callback) {
+    $('confirm-title').textContent = title;
+    $('confirm-message').textContent = message;
+    confirmCallback = callback;
+    $('confirm-dialog').classList.add('active');
+}
+
+function closeConfirm() {
+    $('confirm-dialog').classList.remove('active');
+    confirmCallback = null;
+}
+
+// ======================== ANALYSIS ========================
+function setupAnalysis() {
+    $('period-selector').querySelectorAll('.period-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $('period-selector').querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateAnalysis();
+        });
+    });
+}
+
+function getSelectedRange() {
+    const active = $('period-selector').querySelector('.period-btn.active');
+    return active ? active.dataset.range : 'quarter';
+}
+
+function getFilteredCasesForAnalysis() {
+    const range = getSelectedRange();
+    let startDate = '';
+    if (range === 'week') startDate = getDateNDaysAgo(7);
+    else if (range === 'month') startDate = getDateNDaysAgo(30);
+    else if (range === 'quarter') startDate = getDateNDaysAgo(90);
+    else if (range === 'year') startDate = getDateNDaysAgo(365);
+    // 'all' => no filter
+
+    if (!startDate) return allCases;
+    return allCases.filter(c => (c.date || '') >= startDate);
+}
+
+function updateAnalysis() {
+    const cases = getFilteredCasesForAnalysis();
+
+    // Stats
+    const total = cases.length;
+    const naturalCount = cases.filter(c => (c.caseType || '').includes('Natural')).length;
+    const csectionCount = cases.filter(c => (c.caseType || '').toLowerCase().includes('c-section')).length;
+    const weights = cases.filter(c => c.newbornWeight != null).map(c => c.newbornWeight);
+    const avgWeight = weights.length > 0 ? Math.round(weights.reduce((s, w) => s + w, 0) / weights.length) : null;
+
+    $('stat-total').textContent = total;
+    $('stat-natural').textContent = naturalCount;
+    $('stat-csection').textContent = csectionCount;
+    $('stat-avg-weight').textContent = avgWeight != null ? avgWeight : '—';
+
+    updateTypeChart(cases);
+    updateTrendChart(cases);
+}
+
+function updateTypeChart(cases) {
+    const types = ['Natural Delivery', 'Planned C-section', 'Emergency C-section', 'Crash C-section', 'Others'];
+    const counts = types.map(t => cases.filter(c => c.caseType === t).length);
+    const isDark = document.documentElement.classList.contains('dark');
+    const colors = [
+        getComputedStyle(document.documentElement).getPropertyValue('--chart-natural').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--chart-planned').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--chart-emergency').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--chart-crash').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--chart-others').trim()
+    ];
+
+    const canvas = $('chart-types');
+    if (typeChart) typeChart.destroy();
+
+    typeChart = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels: types,
+            datasets: [{
+                data: counts,
+                backgroundColor: colors,
+                borderWidth: 2,
+                borderColor: isDark ? '#1A2230' : '#FFFFFF'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: isDark ? '#9AACBD' : '#5A6E7F',
+                        font: { family: 'Nunito', size: 12, weight: '600' },
+                        padding: 16,
+                        usePointStyle: true,
+                        pointStyleWidth: 10
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateTrendChart(cases) {
+    // Group by month
+    const monthMap = {};
+    cases.forEach(c => {
+        if (!c.date) return;
+        const month = c.date.substring(0, 7); // YYYY-MM
+        monthMap[month] = (monthMap[month] || 0) + 1;
+    });
+
+    const months = Object.keys(monthMap).sort();
+    const counts = months.map(m => monthMap[m]);
+    const labels = months.map(m => {
+        const parts = m.split('-');
+        const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1);
+        return d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
+    });
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+
+    const canvas = $('chart-trend');
+    if (trendChart) trendChart.destroy();
+
+    trendChart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Cases',
+                data: counts,
+                backgroundColor: accentColor + '44',
+                borderColor: accentColor,
+                borderWidth: 2,
+                borderRadius: 6,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: isDark ? '#637586' : '#8A96A3',
+                        font: { family: 'Nunito', size: 11 }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: isDark ? '#637586' : '#8A96A3',
+                        font: { family: 'Nunito', size: 11 }
+                    },
+                    grid: {
+                        color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ======================== COLLEAGUES ROSTER ========================
+async function loadColleagues() {
+    try {
+        allColleagues = await IDB.getAllColleagues();
+        allColleagues.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    } catch (_e) {
+        // IDB unavailable
+    }
+    refreshColleagueDatalist();
+}
+
+function refreshColleagueDatalist() {
+    const dl = $('colleague-names');
+    dl.innerHTML = '';
+    allColleagues.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name + (c.role ? ', ' + c.role : '');
+        dl.appendChild(opt);
+    });
+}
+
+async function addColleague(name, role) {
+    name = (name || '').trim();
+    if (!name) return;
+    // Skip if already exists (case-insensitive)
+    if (allColleagues.some(c => c.name.toLowerCase() === name.toLowerCase())) return;
+    const record = {
+        id: 'col_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        name: name,
+        role: (role || '').trim()
+    };
+    allColleagues.push(record);
+    allColleagues.sort((a, b) => a.name.localeCompare(b.name));
+    try { await IDB.putColleague(record); } catch (_e) { /* ok */ }
+    refreshColleagueDatalist();
+}
+
+async function removeColleague(id) {
+    allColleagues = allColleagues.filter(c => c.id !== id);
+    try { await IDB.removeColleague(id); } catch (_e) { /* ok */ }
+    refreshColleagueDatalist();
+    renderColleaguesList();
+}
+
+function renderColleaguesList() {
+    const container = $('colleagues-manage-list');
+    if (allColleagues.length === 0) {
+        container.innerHTML = '<div class="colleagues-empty"><i class="fa-solid fa-users" style="margin-right:6px;"></i>No colleagues yet. Add someone above.</div>';
+        return;
+    }
+    let html = '';
+    allColleagues.forEach(c => {
+        html += '<div class="colleague-item" data-id="' + c.id + '">' +
+            '<div class="colleague-item-info">' +
+                '<div class="colleague-item-name">' + c.name + '</div>' +
+                (c.role ? '<div class="colleague-item-role">' + c.role + '</div>' : '') +
+            '</div>' +
+            '<button type="button" class="btn-remove-row" title="Remove"><i class="fa-solid fa-xmark"></i></button>' +
+        '</div>';
+    });
+    container.innerHTML = html;
+    container.querySelectorAll('.colleague-item').forEach(item => {
+        item.querySelector('.btn-remove-row').addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeColleague(item.dataset.id);
+        });
+    });
+}
+
+function setupColleaguesModal() {
+    // Open modal
+    $('btn-manage-roster').addEventListener('click', () => {
+        renderColleaguesList();
+        $('colleagues-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+    // Close modal
+    $('colleagues-close').addEventListener('click', closeColleaguesModal);
+    $('colleagues-modal').addEventListener('click', (e) => {
+        if (e.target === $('colleagues-modal')) closeColleaguesModal();
+    });
+    // Add colleague
+    $('btn-add-colleague').addEventListener('click', async () => {
+        const nameEl = $('new-col-name');
+        const roleEl = $('new-col-role');
+        const name = nameEl.value.trim();
+        if (!name) { nameEl.focus(); return; }
+        await addColleague(name, roleEl.value);
+        nameEl.value = '';
+        roleEl.value = '';
+        nameEl.focus();
+        renderColleaguesList();
+    });
+    // Supervisor name auto-fill handled by datalist (Name, Rank format)
+}
+
+function closeColleaguesModal() {
+    $('colleagues-modal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Auto-add new co-worker / supervisor names to the roster after saving a case
+// Parses "Name, Rank" format from the input field to extract name and rank
+async function autoAddNewColleaguesToRoster(formData) {
+    var entries = [];
+    (formData.coworkers || []).forEach(function(cw) {
+        if (cw.name) {
+            var parts = cw.name.split(',');
+            var nm = parts[0].trim();
+            var rk = parts.length > 1 ? parts.slice(1).join(',').trim() : '';
+            if (nm) entries.push({ name: nm, role: rk });
+        }
+    });
+    if (formData.supervisorName) {
+        var sp = formData.supervisorName.split(',');
+        var snm = sp[0].trim();
+        var srk = sp.length > 1 ? sp.slice(1).join(',').trim() : '';
+        if (snm) entries.push({ name: snm, role: srk });
+    }
+    for (var i = 0; i < entries.length; i++) {
+        await addColleague(entries[i].name, entries[i].role);
+    }
+}
+
+// ======================== BOOT ========================
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
