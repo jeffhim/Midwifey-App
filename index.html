@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#1B3044">
+    <meta name="theme-color" content="#0ABAB5">
     <meta name="apple-mobile-web-app-title" content="Kiki Midwifery">
     <title>Kiki Midwifery Case Log</title>
 
@@ -14,7 +14,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="apple-touch-icon.png">
 
     <!-- Web App Manifest (inline for single-file compatibility) -->
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Kiki%20Midwifery%20Case%20Log%22%2C%22short_name%22%3A%22Kiki%20Midwifery%22%2C%22description%22%3A%22Midwifery%20case%20logging%20and%20analysis%20app%22%2C%22start_url%22%3A%22.%2Findex.html%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231B3044%22%2C%22theme_color%22%3A%22%231B3044%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22apple-touch-icon.png%22%2C%22sizes%22%3A%22180x180%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Kiki%20Midwifery%20Case%20Log%22%2C%22short_name%22%3A%22Kiki%20Midwifery%22%2C%22description%22%3A%22Midwifery%20case%20logging%20and%20analysis%20app%22%2C%22start_url%22%3A%22.%2Findex.html%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230ABAB5%22%2C%22theme_color%22%3A%22%230ABAB5%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22apple-touch-icon.png%22%2C%22sizes%22%3A%22180x180%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,64 +25,36 @@
     <!-- Firebase SDK (loaded dynamically only when configured) -->
 
     <style>
-        /* ======================== CSS VARIABLES ======================== */
+        /* ======================== CSS VARIABLES — Tiffany Blue ======================== */
         :root {
-            --bg-primary: #FAF6F0;
+            --bg-primary: #F0FAFA;
             --bg-secondary: #FFFFFF;
-            --bg-tertiary: #F0EBE3;
-            --bg-glass: rgba(255,255,255,0.7);
-            --text-primary: #1B3044;
-            --text-secondary: #5A6E7F;
-            --text-tertiary: #8A96A3;
-            --accent: #2A9D8F;
-            --accent-light: rgba(42,157,143,0.12);
-            --accent-gold: #D4A853;
-            --accent-gold-light: rgba(212,168,83,0.15);
-            --danger: #C2626A;
-            --danger-light: rgba(194,98,106,0.12);
-            --border: #E5DED3;
-            --shadow: 0 2px 12px rgba(27,48,68,0.06);
-            --shadow-lg: 0 8px 32px rgba(27,48,68,0.10);
+            --bg-tertiary: #E0F2F2;
+            --bg-glass: rgba(240,250,250,0.85);
+            --text-primary: #1A3C3C;
+            --text-secondary: #4D7272;
+            --text-tertiary: #82A6A6;
+            --accent: #0ABAB5;
+            --accent-light: rgba(10,186,181,0.12);
+            --accent-gold: #0ABAB5;
+            --accent-gold-light: rgba(10,186,181,0.10);
+            --danger: #D45D5D;
+            --danger-light: rgba(212,93,93,0.12);
+            --border: #C4DEDE;
+            --shadow: 0 2px 12px rgba(26,60,60,0.06);
+            --shadow-lg: 0 8px 32px rgba(26,60,60,0.10);
             --input-bg: #FFFFFF;
-            --chip-bg: #F0EBE3;
-            --chip-active: #2A9D8F;
+            --chip-bg: #E0F2F2;
+            --chip-active: #0ABAB5;
             --chip-active-text: #FFFFFF;
-            --nav-bg: rgba(255,255,255,0.92);
+            --nav-bg: rgba(240,250,250,0.94);
             --radius: 14px;
             --radius-sm: 10px;
-            --chart-natural: #2A9D8F;
-            --chart-planned: #5B8FF9;
-            --chart-emergency: #F6BD16;
-            --chart-crash: #E76F51;
-            --chart-others: #9B8DFF;
-        }
-        html.dark {
-            --bg-primary: #0F1419;
-            --bg-secondary: #1A2230;
-            --bg-tertiary: #222E3C;
-            --bg-glass: rgba(26,34,48,0.85);
-            --text-primary: #E8E2D9;
-            --text-secondary: #9AACBD;
-            --text-tertiary: #637586;
-            --accent: #35C4B5;
-            --accent-light: rgba(53,196,181,0.15);
-            --accent-gold: #E8C064;
-            --accent-gold-light: rgba(232,192,100,0.15);
-            --danger: #E07A82;
-            --danger-light: rgba(224,122,130,0.15);
-            --border: #2A3848;
-            --shadow: 0 2px 12px rgba(0,0,0,0.2);
-            --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
-            --input-bg: #1A2230;
-            --chip-bg: #222E3C;
-            --chip-active: #35C4B5;
-            --chip-active-text: #0F1419;
-            --nav-bg: rgba(15,20,25,0.92);
-            --chart-natural: #35C4B5;
-            --chart-planned: #6B9BFF;
-            --chart-emergency: #FFD04A;
-            --chart-crash: #FF8E6E;
-            --chart-others: #AFA0FF;
+            --chart-natural: #0ABAB5;
+            --chart-planned: #5B9BD5;
+            --chart-emergency: #E8B84D;
+            --chart-crash: #D47272;
+            --chart-others: #9A88CC;
         }
 
         /* ======================== RESET & BASE ======================== */
@@ -166,7 +138,7 @@
         }
         .login-brand .brand-icon {
             width: 88px; height: 88px;
-            background: linear-gradient(135deg, var(--accent) 0%, #1B7A6F 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, #088F8B 100%);
             border-radius: 24px;
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 20px;
@@ -233,7 +205,7 @@
         }
         .app-header .header-logo {
             width: 36px; height: 36px;
-            background: linear-gradient(135deg, var(--accent) 0%, #1B7A6F 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, #088F8B 100%);
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 1rem;
@@ -496,7 +468,7 @@
         .btn-primary {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, var(--accent) 0%, #1B7A6F 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, #088F8B 100%);
             border: none;
             border-radius: var(--radius);
             font-family: 'Nunito', sans-serif;
@@ -583,19 +555,36 @@
             text-transform: uppercase;
             letter-spacing: 0.03em;
         }
-        .badge-natural { background: rgba(42,157,143,0.15); color: var(--chart-natural); }
-        .badge-planned { background: rgba(91,143,249,0.15); color: var(--chart-planned); }
-        .badge-emergency { background: rgba(246,189,22,0.15); color: #C49600; }
-        html.dark .badge-emergency { color: var(--chart-emergency); }
-        .badge-crash { background: rgba(231,111,81,0.15); color: var(--chart-crash); }
-        .badge-others { background: rgba(155,141,255,0.15); color: var(--chart-others); }
+        .badge-natural { background: rgba(10,186,181,0.12); color: var(--chart-natural); }
+        .badge-planned { background: rgba(91,155,213,0.12); color: var(--chart-planned); }
+        .badge-emergency { background: rgba(232,184,77,0.15); color: #B8922E; }
+        .badge-crash { background: rgba(212,114,114,0.12); color: var(--chart-crash); }
+        .badge-others { background: rgba(154,136,204,0.12); color: var(--chart-others); }
 
+        .case-card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
         .case-card-number {
             font-family: 'Crimson Text', serif;
             font-size: 1.15rem;
             font-weight: 700;
-            margin-bottom: 6px;
         }
+        .btn-fav {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--text-tertiary);
+            padding: 4px;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-fav:hover { color: #F6BD16; }
+        .btn-fav.active { color: #F6BD16; }
+        .btn-fav.active i { font-weight: 900; }
         .case-card-meta {
             display: flex; flex-wrap: wrap; gap: 12px;
             font-size: 0.82rem;
@@ -657,15 +646,15 @@
         }
         .stat-cards {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
             margin-bottom: 24px;
         }
         .stat-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 12px 8px;
             text-align: center;
             box-shadow: var(--shadow);
         }
@@ -768,6 +757,10 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+        .btn-fav-modal { background: rgba(246,189,22,0.15); color: #C49600; }
+        html.dark .btn-fav-modal { color: #F6BD16; }
+        .btn-fav-modal:hover { background: #F6BD16; color: #fff; }
+        .btn-fav-modal.active { background: #F6BD16; color: #fff; }
         .btn-edit { background: var(--accent-light); color: var(--accent); }
         .btn-edit:hover { background: var(--accent); color: #fff; }
         .btn-delete { background: var(--danger-light); color: var(--danger); }
@@ -1014,7 +1007,10 @@
     messagingSenderId: "YOUR_SENDER_ID",
     appId: "YOUR_APP_ID"
   },
-  allowedEmail: "your-email@gmail.com"
+  allowedEmails: [
+    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="503a35363638393d33333810373d31393c7e333f3d">[email&#160;protected]</a>",
+    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1c78736e73687465707d6b2c2a2c2f5c7b717d7570327f7371">[email&#160;protected]</a>"
+  ]
 };</div>
         <p style="font-size:0.85rem;">See the HTML comments in the source code for step-by-step Firebase setup instructions.</p>
     </div>
@@ -1082,16 +1078,47 @@
                         </div>
                     </div>
 
-                    <!-- Patient Info -->
+                    <!-- Mother -->
                     <div class="form-section">
-                        <div class="form-section-title"><i class="fa-solid fa-user"></i> Patient &amp; Newborn</div>
+                        <div class="form-section-title"><i class="fa-solid fa-person-dress"></i> Mother</div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="patient-age">Mother's Age</label>
+                                <label for="patient-age">Age</label>
                                 <input type="number" id="patient-age" min="10" max="65" placeholder="Years">
                             </div>
                             <div class="form-group">
-                                <label for="newborn-sex">Newborn Sex</label>
+                                <label for="blood-loss">Blood Loss (ml)</label>
+                                <input type="number" id="blood-loss" min="0" max="10000" placeholder="e.g. 300">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label>Wound Stage</label>
+                            <div class="chip-grid" id="wound-stage-grid">
+                                <button type="button" class="chip wound-toggle" data-value="1">1</button>
+                                <button type="button" class="chip wound-toggle" data-value="2">2</button>
+                                <button type="button" class="chip wound-toggle" data-value="3">3</button>
+                                <button type="button" class="chip wound-toggle" data-value="4">4</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Episiotomy Wound</label>
+                            <div class="chip-grid" id="episiotomy-grid">
+                                <button type="button" class="chip epi-toggle" data-value="Yes">Yes</button>
+                                <button type="button" class="chip epi-toggle" data-value="No">No</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Infant -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fa-solid fa-baby"></i> Infant</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newborn-weight">Birth Weight (g)</label>
+                                <input type="number" id="newborn-weight" min="200" max="7000" placeholder="e.g. 3200">
+                            </div>
+                            <div class="form-group">
+                                <label for="newborn-sex">Sex</label>
                                 <select id="newborn-sex">
                                     <option value="">Select...</option>
                                     <option value="Male">Male</option>
@@ -1099,13 +1126,6 @@
                                     <option value="Ambiguous">Ambiguous</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="newborn-weight">Birth Weight (g)</label>
-                                <input type="number" id="newborn-weight" min="200" max="7000" placeholder="e.g. 3200">
-                            </div>
-                            <div class="form-group" style="display:none;"></div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
@@ -1129,13 +1149,13 @@
                         </div>
                     </div>
 
-                    <!-- Procedures -->
+                    <!-- Intervention -->
                     <div class="form-section">
-                        <div class="form-section-title"><i class="fa-solid fa-syringe"></i> Procedures Done</div>
+                        <div class="form-section-title"><i class="fa-solid fa-syringe"></i> Intervention</div>
                         <div class="chip-grid" id="procedures-grid"></div>
                         <div class="form-group" style="margin-top:8px;">
-                            <label for="procedures-other">Other Procedures</label>
-                            <input type="text" id="procedures-other" placeholder="Add custom procedures, comma-separated">
+                            <label for="procedures-other">Other Interventions</label>
+                            <input type="text" id="procedures-other" placeholder="Add custom interventions, comma-separated">
                         </div>
                     </div>
 
@@ -1188,11 +1208,11 @@
                         <option value="Neonatologist"></option>
                     </datalist>
 
-                    <!-- Follow-up -->
+                    <!-- Notes -->
                     <div class="form-section">
-                        <div class="form-section-title"><i class="fa-solid fa-list-check"></i> Follow-up Actions</div>
+                        <div class="form-section-title"><i class="fa-solid fa-note-sticky"></i> Notes</div>
                         <div class="form-group">
-                            <textarea id="follow-up" placeholder="Note any required follow-up actions..."></textarea>
+                            <textarea id="follow-up" placeholder="Add any notes..."></textarea>
                         </div>
                     </div>
 
@@ -1207,7 +1227,7 @@
                 <div class="history-header">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="search-input" placeholder="Search by case #, type, or date...">
+                        <input type="text" id="search-input" placeholder="Search case #, type, date, notes...">
                     </div>
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                         <span class="case-count" id="case-count"></span>
@@ -1215,6 +1235,11 @@
                     </div>
                 </div>
                 <div id="history-list"></div>
+            </div>
+
+            <!-- ========== FAVOURITES TAB ========== -->
+            <div id="tab-favourites" class="tab-content">
+                <div id="favourites-list"></div>
             </div>
 
             <!-- ========== ANALYSIS TAB ========== -->
@@ -1228,10 +1253,12 @@
                 </div>
 
                 <div class="stat-cards" id="stat-cards">
-                    <div class="stat-card"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Cases</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total</div></div>
                     <div class="stat-card"><div class="stat-value" id="stat-natural">0</div><div class="stat-label">Natural</div></div>
-                    <div class="stat-card"><div class="stat-value" id="stat-csection">0</div><div class="stat-label">C-sections</div></div>
-                    <div class="stat-card"><div class="stat-value" id="stat-avg-weight">—</div><div class="stat-label">Avg Weight (g)</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-planned">0</div><div class="stat-label">Planned CS</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-emergency">0</div><div class="stat-label">Emergency CS</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-crash">0</div><div class="stat-label">Crash CS</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-others">0</div><div class="stat-label">Others</div></div>
                 </div>
 
                 <div class="chart-container">
@@ -1256,6 +1283,10 @@
                 <i class="fa-solid fa-clock-rotate-left"></i>
                 <span>History</span>
             </button>
+            <button class="nav-item" data-tab="tab-favourites">
+                <i class="fa-solid fa-star"></i>
+                <span>Favourites</span>
+            </button>
             <button class="nav-item" data-tab="tab-analysis">
                 <i class="fa-solid fa-chart-pie"></i>
                 <span>Analysis</span>
@@ -1273,6 +1304,7 @@
             </div>
             <div class="modal-body" id="detail-body"></div>
             <div class="modal-actions">
+                <button class="btn-modal btn-fav-modal" id="detail-fav"><i class="fa-solid fa-star"></i> Favourite</button>
                 <button class="btn-modal btn-edit" id="detail-edit"><i class="fa-solid fa-pen"></i> Edit</button>
                 <button class="btn-modal btn-delete" id="detail-delete"><i class="fa-solid fa-trash"></i> Delete</button>
             </div>
@@ -1313,7 +1345,7 @@
     <!-- ==================== TOAST ==================== -->
     <div id="toast-container"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
  
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                 CONFIGURATION — EDIT BELOW                      ║
@@ -1324,15 +1356,18 @@
 // ║  4. Add your GitHub Pages domain to Authentication > Settings >       ║
 // ║     Authorized domains                                                ║
 // ║  5. Copy your web app config below                                    ║
-// ║  6. Set allowedEmail to YOUR Gmail address                            ║
+// ║  6. Set allowedEmails to the Gmail addresses that can access the app  ║
 // ║                                                                       ║
 // ║  Firestore Security Rules (paste in Firebase Console):                ║
 // ║  rules_version = '2';                                                 ║
 // ║  service cloud.firestore {                                            ║
 // ║    match /databases/{database}/documents {                            ║
-// ║      match /cases/{caseId} {                                          ║
+// ║      match /{document=**} {                                           ║
 // ║        allow read, write: if request.auth != null                     ║
-// ║          && request.auth.token.email == 'YOUR_EMAIL@gmail.com';       ║
+// ║          && request.auth.token.email in [                             ║
+// ║            'jeffhimcch@gmail.com',                                    ║
+// ║            'dorothylaw0603@gmail.com'                                 ║
+// ║          ];                                                           ║
 // ║      }                                                                ║
 // ║    }                                                                  ║
 // ║  }                                                                    ║
@@ -1347,39 +1382,35 @@ const CONFIG = {
         messagingSenderId: "YOUR_SENDER_ID",
         appId: "YOUR_APP_ID"
     },
-    allowedEmail: "your-email@gmail.com"
+    allowedEmails: [
+        "jeffhimcch@gmail.com",
+        "dorothylaw0603@gmail.com"
+    ]
 };
 
-// ======================== PROCEDURES & EVENTS ========================
-const PROCEDURES = [
-    "Episiotomy", "Perineal Repair", "Vacuum Extraction",
-    "Forceps Delivery", "Manual Placenta Removal", "IV Cannulation",
-    "Catheterization", "CTG Monitoring", "Amniotomy (ARM)",
-    "Oxytocin Administration", "Epidural Assistance",
-    "Neonatal Resuscitation", "Cord Blood Collection",
-    "Blood Transfusion", "Fundal Pressure"
+// ======================== INTERVENTIONS & CLINICAL CONDITIONS ========================
+const INTERVENTIONS = [
+    "Amniotomy (ARM)", "Blood Transfusion", "Catheterization",
+    "Cord Blood Collection", "CTG Monitoring", "Delayed Cord Clamping",
+    "Epidural Assistance", "Episiotomy", "Forceps Delivery",
+    "Fundal Pressure", "IV Cannulation", "Manual Placenta Removal",
+    "Neonatal Resuscitation", "Oxytocin Administration",
+    "Perineal Repair", "Vacuum Extraction"
 ];
 
-const SPECIAL_EVENTS = [
-    "Postpartum Haemorrhage", "Shoulder Dystocia", "Cord Prolapse",
-    "Meconium Stained Liquor", "Fetal Distress", "Maternal Collapse",
-    "NICU Admission", "Retained Placenta", "Pre-eclampsia / Eclampsia",
-    "Birth Injury", "Uterine Rupture", "Stillbirth"
+const CLINICAL_CONDITIONS = [
+    "Birth Injury", "Cord Prolapse", "Cord Round Neck",
+    "Fetal Distress", "Maternal Collapse", "Meconium Stained Liquor",
+    "NICU Admission", "Postpartum Haemorrhage",
+    "Pre-eclampsia / Eclampsia", "Retained Placenta",
+    "Shoulder Dystocia", "Stillbirth", "Uterine Rupture"
 ];
 
 const JOB_OPTIONS = ['上枱', '大草', '細草', '執仔', '救仔', '其他'];
 
-// ======================== DARK MODE ========================
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.classList.add('dark');
-}
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-    if (event.matches) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
-});
+// ======================== THEME ========================
+// Always use light mode (Tiffany Blue)
+document.documentElement.classList.remove('dark');
 
 // ======================== STATE ========================
 let db, auth;
@@ -1551,13 +1582,14 @@ async function initApp() {
 
         auth.onAuthStateChanged(user => {
             if (user) {
-                if (user.email.toLowerCase() === CONFIG.allowedEmail.toLowerCase()) {
+                var emailAllowed = CONFIG.allowedEmails.some(function(e) { return e.toLowerCase() === user.email.toLowerCase(); });
+                if (emailAllowed) {
                     $('btn-signout').style.display = '';
                     showScreen('app-show');
                     loadAllCases();
                 } else {
                     auth.signOut();
-                    $('login-error').textContent = 'Access denied. Only ' + CONFIG.allowedEmail + ' can use this app.';
+                    $('login-error').textContent = 'Access denied. Your email is not authorised to use this app.';
                     $('login-error').style.display = 'block';
                     showScreen('login-screen');
                     $('login-screen').classList.add('active');
@@ -1609,6 +1641,9 @@ function setupNavigation() {
             if (btn.dataset.tab === 'tab-analysis') {
                 updateAnalysis();
             }
+            if (btn.dataset.tab === 'tab-favourites') {
+                renderFavourites();
+            }
         });
     });
 }
@@ -1619,9 +1654,9 @@ function setupForm() {
     $('case-date').value = getTodayStr();
     $('case-time').value = getNowTime();
 
-    // Render procedure chips
+    // Render intervention chips
     const procGrid = $('procedures-grid');
-    PROCEDURES.forEach(proc => {
+    INTERVENTIONS.forEach(proc => {
         const chip = document.createElement('button');
         chip.type = 'button';
         chip.className = 'chip';
@@ -1631,9 +1666,9 @@ function setupForm() {
         procGrid.appendChild(chip);
     });
 
-    // Render event chips
+    // Render clinical condition chips
     const evtGrid = $('events-grid');
-    SPECIAL_EVENTS.forEach(evt => {
+    CLINICAL_CONDITIONS.forEach(evt => {
         const chip = document.createElement('button');
         chip.type = 'button';
         chip.className = 'chip chip-danger';
@@ -1641,6 +1676,24 @@ function setupForm() {
         chip.dataset.value = evt;
         chip.addEventListener('click', () => chip.classList.toggle('active'));
         evtGrid.appendChild(chip);
+    });
+
+    // Wound stage toggles (only one active at a time)
+    $('wound-stage-grid').querySelectorAll('.wound-toggle').forEach(btn => {
+        btn.addEventListener('click', function() {
+            var wasActive = btn.classList.contains('active');
+            $('wound-stage-grid').querySelectorAll('.wound-toggle').forEach(b => b.classList.remove('active'));
+            if (!wasActive) btn.classList.add('active');
+        });
+    });
+
+    // Episiotomy toggles (only one active at a time)
+    $('episiotomy-grid').querySelectorAll('.epi-toggle').forEach(btn => {
+        btn.addEventListener('click', function() {
+            var wasActive = btn.classList.contains('active');
+            $('episiotomy-grid').querySelectorAll('.epi-toggle').forEach(b => b.classList.remove('active'));
+            if (!wasActive) btn.classList.add('active');
+        });
     });
 
     // Add first co-worker row
@@ -1740,12 +1793,21 @@ function getFormData() {
         if (n || d) coworkers.push({ name: n, duty: d });
     });
 
+    // Mother toggles
+    var woundStageEl = $('wound-stage-grid').querySelector('.wound-toggle.active');
+    var woundStage = woundStageEl ? parseInt(woundStageEl.dataset.value, 10) : null;
+    var epiEl = $('episiotomy-grid').querySelector('.epi-toggle.active');
+    var episiotomy = epiEl ? epiEl.dataset.value : '';
+
     return {
         date: $('case-date').value,
         time: $('case-time').value,
         caseNumber: $('case-number').value.trim(),
         caseType: $('case-type').value,
         patientAge: $('patient-age').value ? parseInt($('patient-age').value, 10) : null,
+        bloodLoss: $('blood-loss').value ? parseInt($('blood-loss').value, 10) : null,
+        woundStage: woundStage,
+        episiotomy: episiotomy,
         newbornSex: $('newborn-sex').value,
         newbornWeight: $('newborn-weight').value ? parseInt($('newborn-weight').value, 10) : null,
         apgar1: $('apgar-1').value !== '' ? parseInt($('apgar-1').value, 10) : null,
@@ -1769,6 +1831,10 @@ function resetForm() {
     $('procedures-other').value = '';
     $('events-other').value = '';
 
+    // Reset mother toggles
+    $('wound-stage-grid').querySelectorAll('.wound-toggle.active').forEach(c => c.classList.remove('active'));
+    $('episiotomy-grid').querySelectorAll('.epi-toggle.active').forEach(c => c.classList.remove('active'));
+
     // Reset supervisor job select
     $('supervisor-duty').selectedIndex = 0;
     $('supervisor-duty-other').value = '';
@@ -1789,6 +1855,18 @@ function populateForm(caseData) {
     $('case-number').value = caseData.caseNumber || '';
     $('case-type').value = caseData.caseType || '';
     $('patient-age').value = caseData.patientAge != null ? caseData.patientAge : '';
+    $('blood-loss').value = caseData.bloodLoss != null ? caseData.bloodLoss : '';
+
+    // Wound stage toggle
+    $('wound-stage-grid').querySelectorAll('.wound-toggle').forEach(function(btn) {
+        btn.classList.toggle('active', caseData.woundStage != null && String(caseData.woundStage) === btn.dataset.value);
+    });
+
+    // Episiotomy toggle
+    $('episiotomy-grid').querySelectorAll('.epi-toggle').forEach(function(btn) {
+        btn.classList.toggle('active', caseData.episiotomy === btn.dataset.value);
+    });
+
     $('newborn-sex').value = caseData.newbornSex || '';
     $('newborn-weight').value = caseData.newbornWeight != null ? caseData.newbornWeight : '';
     $('apgar-1').value = caseData.apgar1 != null ? caseData.apgar1 : '';
@@ -1877,6 +1955,7 @@ async function handleFormSubmit(e) {
             await loadAllCases();
         } else {
             renderHistory();
+            renderFavourites();
             updateAnalysis();
         }
     } catch (err) {
@@ -1919,6 +1998,7 @@ async function loadAllCases() {
         }
     }
     renderHistory();
+    renderFavourites();
     updateAnalysis();
 }
 
@@ -1941,7 +2021,8 @@ function renderHistory() {
         if (!query) return true;
         return (c.caseNumber || '').toLowerCase().includes(query)
             || (c.caseType || '').toLowerCase().includes(query)
-            || (c.date || '').includes(query);
+            || (c.date || '').includes(query)
+            || (c.followUp || '').toLowerCase().includes(query);
     });
 
     const list = $('history-list');
@@ -1962,26 +2043,80 @@ function renderHistory() {
         return;
     }
 
-    let html = '';
-    filtered.forEach(c => {
-        const badgeClass = getCaseTypeBadgeClass(c.caseType);
+    list.innerHTML = buildCaseCardsHTML(filtered);
+    bindCaseCardEvents(list);
+}
+
+function buildCaseCardsHTML(cases) {
+    var html = '';
+    cases.forEach(function(c) {
+        var badgeClass = getCaseTypeBadgeClass(c.caseType);
+        var isFav = c.favourite ? 'active' : '';
         html += '<div class="case-card" data-id="' + c.id + '">' +
             '<div class="case-card-top">' +
                 '<span class="case-card-date">' + formatDate(c.date) + (c.time ? ' · ' + c.time : '') + '</span>' +
                 '<span class="case-type-badge ' + badgeClass + '">' + (c.caseType || 'N/A') + '</span>' +
             '</div>' +
-            '<div class="case-card-number">' + (c.caseNumber || '—') + '</div>' +
+            '<div class="case-card-row">' +
+                '<div class="case-card-number">' + (c.caseNumber || '—') + '</div>' +
+                '<button class="btn-fav ' + isFav + '" data-fav-id="' + c.id + '" title="Toggle favourite"><i class="fa-solid fa-star"></i></button>' +
+            '</div>' +
             '<div class="case-card-meta">' +
                 ((c.specialEvents && c.specialEvents.length > 0) ? c.specialEvents.map(function(ev) { return '<span class="condition-tag"><i class="fa-solid fa-triangle-exclamation"></i> ' + ev + '</span>'; }).join('') : '<span class="no-conditions">No conditions</span>') +
             '</div>' +
         '</div>';
     });
-    list.innerHTML = html;
+    return html;
+}
 
-    // Click handlers
-    list.querySelectorAll('.case-card').forEach(card => {
-        card.addEventListener('click', () => openCaseDetail(card.dataset.id));
+function bindCaseCardEvents(container) {
+    container.querySelectorAll('.case-card').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+            // Don't open detail if clicking the fav button
+            if (e.target.closest('.btn-fav')) return;
+            openCaseDetail(card.dataset.id);
+        });
     });
+    container.querySelectorAll('.btn-fav').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleFavourite(btn.dataset.favId);
+        });
+    });
+}
+
+// ======================== FAVOURITES ========================
+async function toggleFavourite(caseId) {
+    var c = allCases.find(function(x) { return x.id === caseId; });
+    if (!c) return;
+    c.favourite = !c.favourite;
+
+    if (useFirebase) {
+        try {
+            await db.collection('cases').doc(caseId).update({ favourite: c.favourite });
+        } catch (err) {
+            showToast('Error updating favourite: ' + err.message, 'error');
+            return;
+        }
+    } else {
+        try { await IDB.put(c); } catch (_e) { /* ok */ }
+    }
+
+    renderHistory();
+    renderFavourites();
+}
+
+function renderFavourites() {
+    var list = $('favourites-list');
+    var favCases = allCases.filter(function(c) { return c.favourite; });
+
+    if (favCases.length === 0) {
+        list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-star"></i><p>No favourites yet. Tap the ★ on any case to add it here.</p></div>';
+        return;
+    }
+
+    list.innerHTML = buildCaseCardsHTML(favCases);
+    bindCaseCardEvents(list);
 }
 
 // ======================== CSV EXPORT ========================
@@ -1994,13 +2129,16 @@ function setupExport() {
 
 function exportCSV() {
     if (allCases.length === 0) return;
-    const headers = ['Date','Time','Case Number','Type','Mother\'s Age','Newborn Sex','Birth Weight (g)','Apgar 1min','Apgar 5min','Clinical Conditions','Procedures','Co-workers','Supervisor','Follow-up'];
+    const headers = ['Date','Time','Case Number','Type','Mother\'s Age','Blood Loss (ml)','Wound Stage','Episiotomy','Sex','Birth Weight (g)','Apgar 1min','Apgar 5min','Clinical Conditions','Interventions','Co-workers','Supervisor','Notes'];
     const rows = allCases.map(c => [
         c.date || '',
         c.time || '',
         c.caseNumber || '',
         c.caseType || '',
         c.patientAge != null ? c.patientAge : '',
+        c.bloodLoss != null ? c.bloodLoss : '',
+        c.woundStage != null ? c.woundStage : '',
+        c.episiotomy || '',
         c.newbornSex || '',
         c.newbornWeight != null ? c.newbornWeight : '',
         c.apgar1 != null ? c.apgar1 : '',
@@ -2037,6 +2175,16 @@ function setupModals() {
         if (e.target === $('case-detail-modal')) closeDetailModal();
     });
 
+    // Favourite button
+    $('detail-fav').addEventListener('click', async function() {
+        if (!currentDetailCase) return;
+        await toggleFavourite(currentDetailCase.id);
+        // Update button state
+        var isFav = currentDetailCase.favourite;
+        $('detail-fav').classList.toggle('active', isFav);
+        $('detail-fav').innerHTML = '<i class="fa-solid fa-star"></i> ' + (isFav ? 'Unfavourite' : 'Favourite');
+    });
+
     // Edit button
     $('detail-edit').addEventListener('click', () => {
         if (!currentDetailCase) return;
@@ -2069,6 +2217,7 @@ function setupModals() {
                     await loadAllCases();
                 } else {
                     renderHistory();
+                    renderFavourites();
                     updateAnalysis();
                 }
             } catch (err) {
@@ -2108,7 +2257,17 @@ function openCaseDetail(caseId) {
     '</div>';
 
     html += '<div class="detail-row">' +
-        '<div class="detail-group"><div class="detail-label">Newborn Sex</div><div class="detail-value">' + (c.newbornSex || '—') + '</div></div>' +
+        '<div class="detail-group"><div class="detail-label">Blood Loss</div><div class="detail-value">' + (c.bloodLoss != null ? c.bloodLoss + ' ml' : '—') + '</div></div>' +
+        '<div class="detail-group"><div class="detail-label">Wound Stage</div><div class="detail-value">' + (c.woundStage != null ? 'Stage ' + c.woundStage : '—') + '</div></div>' +
+    '</div>';
+
+    html += '<div class="detail-row">' +
+        '<div class="detail-group"><div class="detail-label">Episiotomy</div><div class="detail-value">' + (c.episiotomy || '—') + '</div></div>' +
+        '<div class="detail-group"></div>' +
+    '</div>';
+
+    html += '<div class="detail-row">' +
+        '<div class="detail-group"><div class="detail-label">Sex</div><div class="detail-value">' + (c.newbornSex || '—') + '</div></div>' +
         '<div class="detail-group"><div class="detail-label">Birth Weight</div><div class="detail-value">' + (c.newbornWeight != null ? c.newbornWeight + ' g' : '—') + '</div></div>' +
     '</div>';
 
@@ -2124,7 +2283,7 @@ function openCaseDetail(caseId) {
     }
 
     if (c.procedures && c.procedures.length > 0) {
-        html += '<div class="detail-group"><div class="detail-label">Procedures</div><div class="detail-chips">' +
+        html += '<div class="detail-group"><div class="detail-label">Interventions</div><div class="detail-chips">' +
             c.procedures.map(p => '<span class="detail-chip">' + p + '</span>').join('') +
         '</div></div>';
     }
@@ -2142,10 +2301,16 @@ function openCaseDetail(caseId) {
     }
 
     if (c.followUp) {
-        html += '<div class="detail-group"><div class="detail-label">Follow-up Actions</div><div class="detail-value">' + c.followUp.replace(/\n/g, '<br>') + '</div></div>';
+        html += '<div class="detail-group"><div class="detail-label">Notes</div><div class="detail-value">' + c.followUp.replace(/\n/g, '<br>') + '</div></div>';
     }
 
     $('detail-body').innerHTML = html;
+
+    // Set favourite button state
+    var isFav = c.favourite;
+    $('detail-fav').classList.toggle('active', !!isFav);
+    $('detail-fav').innerHTML = '<i class="fa-solid fa-star"></i> ' + (isFav ? 'Unfavourite' : 'Favourite');
+
     $('case-detail-modal').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -2200,17 +2365,24 @@ function getFilteredCasesForAnalysis() {
 function updateAnalysis() {
     const cases = getFilteredCasesForAnalysis();
 
-    // Stats
-    const total = cases.length;
-    const naturalCount = cases.filter(c => (c.caseType || '').includes('Natural')).length;
-    const csectionCount = cases.filter(c => (c.caseType || '').toLowerCase().includes('c-section')).length;
-    const weights = cases.filter(c => c.newbornWeight != null).map(c => c.newbornWeight);
-    const avgWeight = weights.length > 0 ? Math.round(weights.reduce((s, w) => s + w, 0) / weights.length) : null;
+    // Stats by case type
+    var total = cases.length;
+    var countByType = { natural: 0, planned: 0, emergency: 0, crash: 0, others: 0 };
+    cases.forEach(function(c) {
+        var t = c.caseType || '';
+        if (t === 'Natural Delivery') countByType.natural++;
+        else if (t === 'Planned C-section') countByType.planned++;
+        else if (t === 'Emergency C-section') countByType.emergency++;
+        else if (t === 'Crash C-section') countByType.crash++;
+        else if (t) countByType.others++;
+    });
 
     $('stat-total').textContent = total;
-    $('stat-natural').textContent = naturalCount;
-    $('stat-csection').textContent = csectionCount;
-    $('stat-avg-weight').textContent = avgWeight != null ? avgWeight : '—';
+    $('stat-natural').textContent = countByType.natural;
+    $('stat-planned').textContent = countByType.planned;
+    $('stat-emergency').textContent = countByType.emergency;
+    $('stat-crash').textContent = countByType.crash;
+    $('stat-others').textContent = countByType.others;
 
     updateTypeChart(cases);
     updateTrendChart(cases);
@@ -2239,7 +2411,7 @@ function updateTypeChart(cases) {
                 data: counts,
                 backgroundColor: colors,
                 borderWidth: 2,
-                borderColor: isDark ? '#1A2230' : '#FFFFFF'
+                borderColor: '#FFFFFF'
             }]
         },
         options: {
