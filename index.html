@@ -464,6 +464,39 @@
         }
         .btn-add-row:hover { background: var(--accent); color: #fff; }
 
+        /* ======================== FAVOURITE TOGGLE (Form) ======================== */
+        .fav-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .fav-toggle-row:hover { border-color: #F6BD16; }
+        .fav-toggle-row.active {
+            border-color: #F6BD16;
+            background: rgba(246,189,22,0.08);
+        }
+        .fav-toggle-row i {
+            font-size: 1.1rem;
+            color: var(--text-tertiary);
+            transition: all 0.2s;
+        }
+        .fav-toggle-row.active i { color: #F6BD16; font-weight: 900; }
+        .fav-toggle-row span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .fav-toggle-row.active span { color: #B8920E; }
+
         /* ======================== PRIMARY BUTTON ======================== */
         .btn-primary {
             width: 100%;
@@ -586,7 +619,7 @@
         .btn-fav.active { color: #F6BD16; }
         .btn-fav.active i { font-weight: 900; }
         .case-card-meta {
-            display: flex; flex-wrap: wrap; gap: 12px;
+            display: flex; flex-wrap: wrap; gap: 6px;
             font-size: 0.82rem;
             color: var(--text-secondary);
         }
@@ -606,6 +639,29 @@
             gap: 4px;
         }
         .condition-tag i { color: var(--danger); font-size: 0.7rem; }
+        .intervention-tag {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .intervention-tag i { color: var(--accent); font-size: 0.7rem; }
+        .case-card-note {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .case-card-note i { color: var(--text-tertiary); margin-right: 4px; font-size: 0.75rem; }
         .no-conditions {
             color: var(--text-tertiary);
             font-size: 0.8rem;
@@ -1008,8 +1064,8 @@
     appId: "YOUR_APP_ID"
   },
   allowedEmails: [
-    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c4aea1a2a2acada9a7a7ac84a3a9a5ada8eaa7aba9">[email&#160;protected]</a>",
-    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a9cdc6dbc6ddc1d0c5c8de999f999ae9cec4c8c0c587cac6c4">[email&#160;protected]</a>"
+    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="375d5251515f5e5a54545f77505a565e5b1954585a">[email&#160;protected]</a>",
+    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5f3b302d302b3726333e286f696f6c1f38323e3633713c3032">[email&#160;protected]</a>"
   ]
 };</div>
         <p style="font-size:0.85rem;">See the HTML comments in the source code for step-by-step Firebase setup instructions.</p>
@@ -1214,6 +1270,11 @@
                         <div class="form-group">
                             <textarea id="follow-up" placeholder="Add any notes..."></textarea>
                         </div>
+                    </div>
+
+                    <div class="fav-toggle-row" id="form-fav-toggle">
+                        <i class="fa-solid fa-star"></i>
+                        <span>Add to Favourites</span>
                     </div>
 
                     <button type="submit" class="btn-primary" id="btn-submit-case">
@@ -1711,6 +1772,11 @@ function setupForm() {
         $('supervisor-duty-other').style.display = isOther ? 'block' : 'none';
         if (!isOther) $('supervisor-duty-other').value = '';
     });
+
+    // Favourite toggle
+    $('form-fav-toggle').addEventListener('click', function() {
+        $('form-fav-toggle').classList.toggle('active');
+    });
 }
 
 function buildJobSelectHTML(selected) {
@@ -1817,7 +1883,8 @@ function getFormData() {
         coworkers: coworkers,
         supervisorName: $('supervisor-name').value.trim(),
         supervisorDuty: getJobDutyValue($('supervisor-duty'), $('supervisor-duty-other')),
-        followUp: $('follow-up').value.trim()
+        followUp: $('follow-up').value.trim(),
+        favourite: $('form-fav-toggle').classList.contains('active')
     };
 }
 
@@ -1844,6 +1911,9 @@ function resetForm() {
     const list = $('coworkers-list');
     list.innerHTML = '';
     addCoworkerRow();
+
+    // Reset favourite toggle
+    $('form-fav-toggle').classList.remove('active');
 
     editingCaseId = null;
     $('btn-submit-case').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> &nbsp;Save Case';
@@ -1877,6 +1947,9 @@ function populateForm(caseData) {
     $('supervisor-duty-other').value = supParsed.other;
     $('supervisor-duty-other').style.display = supParsed.job === '其他' ? 'block' : 'none';
     $('follow-up').value = caseData.followUp || '';
+
+    // Favourite toggle
+    $('form-fav-toggle').classList.toggle('active', !!caseData.favourite);
 
     // Procedures — toggle chips and put non-standard items in free text
     const knownProcs = new Set();
@@ -2061,8 +2134,10 @@ function buildCaseCardsHTML(cases) {
                 '<div class="case-card-number">' + (c.caseNumber || '—') + '</div>' +
                 '<button class="btn-fav ' + isFav + '" data-fav-id="' + c.id + '" title="Toggle favourite"><i class="fa-solid fa-star"></i></button>' +
             '</div>' +
+            (c.followUp ? '<div class="case-card-note">' + c.followUp.replace(/\n/g, ' ') + '</div>' : '') +
             '<div class="case-card-meta">' +
-                ((c.specialEvents && c.specialEvents.length > 0) ? c.specialEvents.map(function(ev) { return '<span class="condition-tag"><i class="fa-solid fa-triangle-exclamation"></i> ' + ev + '</span>'; }).join('') : '<span class="no-conditions">No conditions</span>') +
+                ((c.specialEvents && c.specialEvents.length > 0) ? c.specialEvents.map(function(ev) { return '<span class="condition-tag">' + ev + '</span>'; }).join('') : '') +
+                ((c.procedures && c.procedures.length > 0) ? c.procedures.map(function(p) { return '<span class="intervention-tag">' + p + '</span>'; }).join('') : '') +
             '</div>' +
         '</div>';
     });
