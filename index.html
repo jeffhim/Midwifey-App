@@ -1064,8 +1064,8 @@
     appId: "YOUR_APP_ID"
   },
   allowedEmails: [
-    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6c06090a0a0405010f0f042c0b010d0500420f0301">[email&#160;protected]</a>",
-    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aacec5d8c5dec2d3c6cbdd9a9c9a99eacdc7cbc3c684c9c5c7">[email&#160;protected]</a>"
+    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="39535c5f5f5150545a5a51795e54585055175a5654">[email&#160;protected]</a>",
+    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ffbf0edf0ebf7e6f3fee8afa9afacdff8f2fef6f3b1fcf0f2">[email&#160;protected]</a>"
   ]
 };</div>
         <p style="font-size:0.85rem;">See the HTML comments in the source code for step-by-step Firebase setup instructions.</p>
@@ -2058,7 +2058,6 @@ async function loadAllCases() {
     if (useFirebase) {
         try {
             const snapshot = await db.collection('cases')
-                .where('userId', '==', auth.currentUser.uid)
                 .orderBy('date', 'desc')
                 .orderBy('time', 'desc')
                 .get();
@@ -2066,7 +2065,6 @@ async function loadAllCases() {
         } catch (_err) {
             try {
                 const snapshot = await db.collection('cases')
-                    .where('userId', '==', auth.currentUser.uid)
                     .get();
                 allCases = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 sortCasesDesc();
