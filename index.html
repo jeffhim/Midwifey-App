@@ -1064,8 +1064,8 @@
     appId: "YOUR_APP_ID"
   },
   allowedEmails: [
-    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="375d5251515f5e5a54545f77505a565e5b1954585a">[email&#160;protected]</a>",
-    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5f3b302d302b3726333e286f696f6c1f38323e3633713c3032">[email&#160;protected]</a>"
+    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6c06090a0a0405010f0f042c0b010d0500420f0301">[email&#160;protected]</a>",
+    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aacec5d8c5dec2d3c6cbdd9a9c9a99eacdc7cbc3c684c9c5c7">[email&#160;protected]</a>"
   ]
 };</div>
         <p style="font-size:0.85rem;">See the HTML comments in the source code for step-by-step Firebase setup instructions.</p>
@@ -1145,6 +1145,16 @@
                             <div class="form-group">
                                 <label for="blood-loss">Blood Loss (ml)</label>
                                 <input type="number" id="blood-loss" min="0" max="10000" placeholder="e.g. 300">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="gravida">Gravida (G)</label>
+                                <input type="number" id="gravida" min="1" max="20" placeholder="e.g. 2">
+                            </div>
+                            <div class="form-group">
+                                <label for="para">Para (P)</label>
+                                <input type="number" id="para" min="0" max="20" placeholder="e.g. 1">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom:12px;">
@@ -1871,6 +1881,8 @@ function getFormData() {
         caseNumber: $('case-number').value.trim(),
         caseType: $('case-type').value,
         patientAge: $('patient-age').value ? parseInt($('patient-age').value, 10) : null,
+        gravida: $('gravida').value ? parseInt($('gravida').value, 10) : null,
+        para: $('para').value ? parseInt($('para').value, 10) : null,
         bloodLoss: $('blood-loss').value ? parseInt($('blood-loss').value, 10) : null,
         woundStage: woundStage,
         episiotomy: episiotomy,
@@ -1925,6 +1937,8 @@ function populateForm(caseData) {
     $('case-number').value = caseData.caseNumber || '';
     $('case-type').value = caseData.caseType || '';
     $('patient-age').value = caseData.patientAge != null ? caseData.patientAge : '';
+    $('gravida').value = caseData.gravida != null ? caseData.gravida : '';
+    $('para').value = caseData.para != null ? caseData.para : '';
     $('blood-loss').value = caseData.bloodLoss != null ? caseData.bloodLoss : '';
 
     // Wound stage toggle
@@ -2204,13 +2218,15 @@ function setupExport() {
 
 function exportCSV() {
     if (allCases.length === 0) return;
-    const headers = ['Date','Time','Case Number','Type','Mother\'s Age','Blood Loss (ml)','Wound Stage','Episiotomy','Sex','Birth Weight (g)','Apgar 1min','Apgar 5min','Clinical Conditions','Interventions','Co-workers','Supervisor','Notes'];
+    const headers = ['Date','Time','Case Number','Type','Mother\'s Age','Gravida','Para','Blood Loss (ml)','Wound Stage','Episiotomy','Sex','Birth Weight (g)','Apgar 1min','Apgar 5min','Clinical Conditions','Interventions','Co-workers','Supervisor','Notes'];
     const rows = allCases.map(c => [
         c.date || '',
         c.time || '',
         c.caseNumber || '',
         c.caseType || '',
         c.patientAge != null ? c.patientAge : '',
+        c.gravida != null ? c.gravida : '',
+        c.para != null ? c.para : '',
         c.bloodLoss != null ? c.bloodLoss : '',
         c.woundStage != null ? c.woundStage : '',
         c.episiotomy || '',
@@ -2329,6 +2345,11 @@ function openCaseDetail(caseId) {
     html += '<div class="detail-row">' +
         '<div class="detail-group"><div class="detail-label">Type</div><div class="detail-value"><span class="case-type-badge ' + getCaseTypeBadgeClass(c.caseType) + '">' + (c.caseType || '—') + '</span></div></div>' +
         '<div class="detail-group"><div class="detail-label">Mother\'s Age</div><div class="detail-value">' + (c.patientAge != null ? c.patientAge + ' years' : '—') + '</div></div>' +
+    '</div>';
+
+    html += '<div class="detail-row">' +
+        '<div class="detail-group"><div class="detail-label">Gravida</div><div class="detail-value">' + (c.gravida != null ? 'G' + c.gravida : '—') + '</div></div>' +
+        '<div class="detail-group"><div class="detail-label">Para</div><div class="detail-value">' + (c.para != null ? 'P' + c.para : '—') + '</div></div>' +
     '</div>';
 
     html += '<div class="detail-row">' +
