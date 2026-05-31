@@ -745,6 +745,94 @@
             max-height: 280px;
         }
 
+        /* ======================== CALCULATION TAB ======================== */
+        .calc-section {
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 16px;
+            margin-bottom: 20px;
+        }
+        .calc-section-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-light);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .calc-section-title i {
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+        .calc-result-box {
+            background: var(--accent-light);
+            border: 1.5px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 20px 16px;
+            margin-top: 16px;
+        }
+        .calc-result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .calc-result-row + .calc-result-row {
+            border-top: 1px solid rgba(10,186,181,0.2);
+        }
+        .calc-result-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .calc-result-value {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .calc-result-value.placeholder {
+            color: var(--text-tertiary);
+            font-size: 1rem;
+        }
+        .calc-btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .calc-btn-now {
+            padding: 10px 18px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            flex: 1;
+        }
+        .calc-btn-now:hover { opacity: 0.85; }
+        .calc-btn-reset {
+            padding: 10px 18px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .calc-btn-reset:hover { border-color: var(--accent); }
+
         /* ======================== MODAL ======================== */
         .modal-overlay {
             display: none;
@@ -1064,8 +1152,8 @@
     appId: "YOUR_APP_ID"
   },
   allowedEmails: [
-    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="39535c5f5f5150545a5a51795e54585055175a5654">[email&#160;protected]</a>",
-    "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ffbf0edf0ebf7e6f3fee8afa9afacdff8f2fef6f3b1fcf0f2">[email&#160;protected]</a>"
+    "jeffhimcch@gmail.com",
+    "dorothylaw0603@gmail.com"
   ]
 };</div>
         <p style="font-size:0.85rem;">See the HTML comments in the source code for step-by-step Firebase setup instructions.</p>
@@ -1342,6 +1430,58 @@
                     <canvas id="chart-trend"></canvas>
                 </div>
             </div>
+
+            <!-- ==================== CALCULATION TAB ==================== -->
+            <div id="tab-calculation" class="tab-content">
+                <div class="calc-section">
+                    <div class="calc-section-title">
+                        <i class="fa-solid fa-stopwatch"></i>
+                        SROM Duration
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>SROM Date</label>
+                            <input type="date" id="srom-date">
+                        </div>
+                        <div class="form-group">
+                            <label>SROM Time</label>
+                            <input type="time" id="srom-time">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Measuring Date</label>
+                            <input type="date" id="measure-date">
+                        </div>
+                        <div class="form-group">
+                            <label>Measuring Time</label>
+                            <input type="time" id="measure-time">
+                        </div>
+                    </div>
+
+                    <div class="calc-btn-row">
+                        <button class="calc-btn-now" id="srom-now-btn">
+                            <i class="fa-solid fa-clock"></i> Set Measuring to Now
+                        </button>
+                        <button class="calc-btn-reset" id="srom-reset-btn">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+
+                    <div class="calc-result-box" id="srom-result-box">
+                        <div class="calc-result-row">
+                            <span class="calc-result-label">Duration</span>
+                            <span class="calc-result-value placeholder" id="srom-duration">—</span>
+                        </div>
+                        <div class="calc-result-row">
+                            <span class="calc-result-label">Total Minutes</span>
+                            <span class="calc-result-value placeholder" id="srom-minutes">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Bottom Navigation -->
@@ -1361,6 +1501,10 @@
             <button class="nav-item" data-tab="tab-analysis">
                 <i class="fa-solid fa-chart-pie"></i>
                 <span>Analysis</span>
+            </button>
+            <button class="nav-item" data-tab="tab-calculation">
+                <i class="fa-solid fa-calculator"></i>
+                <span>Calc</span>
             </button>
         </nav>
     </div>
@@ -1416,7 +1560,7 @@
     <!-- ==================== TOAST ==================== -->
     <div id="toast-container"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
  
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                 CONFIGURATION — EDIT BELOW                      ║
@@ -1631,6 +1775,7 @@ async function initApp() {
     setupNavigation();
     setupHistory();
     setupAnalysis();
+    setupSROMCalculator();
     setupModals();
     setupColleaguesModal();
     await loadColleagues();
@@ -2454,6 +2599,94 @@ function getFilteredCasesForAnalysis() {
 
     if (!startDate) return allCases;
     return allCases.filter(c => (c.date || '') >= startDate);
+}
+
+// ======================== SROM CALCULATOR ========================
+function setupSROMCalculator() {
+    var sromDate = $('srom-date');
+    var sromTime = $('srom-time');
+    var measureDate = $('measure-date');
+    var measureTime = $('measure-time');
+
+    // Set defaults
+    function setDefaults() {
+        sromDate.value = getTodayStr();
+        sromTime.value = getNowTime();
+        measureDate.value = getTodayStr();
+        measureTime.value = getNowTime();
+    }
+    setDefaults();
+    calculateSROM();
+
+    // Auto-calculate on input change
+    sromDate.addEventListener('change', calculateSROM);
+    sromTime.addEventListener('change', calculateSROM);
+    measureDate.addEventListener('change', calculateSROM);
+    measureTime.addEventListener('change', calculateSROM);
+    // Also handle input event for better responsiveness
+    sromDate.addEventListener('input', calculateSROM);
+    sromTime.addEventListener('input', calculateSROM);
+    measureDate.addEventListener('input', calculateSROM);
+    measureTime.addEventListener('input', calculateSROM);
+
+    // "Set Measuring to Now" button
+    $('srom-now-btn').addEventListener('click', function() {
+        measureDate.value = getTodayStr();
+        measureTime.value = getNowTime();
+        calculateSROM();
+    });
+
+    // Reset button
+    $('srom-reset-btn').addEventListener('click', function() {
+        setDefaults();
+        calculateSROM();
+    });
+}
+
+function calculateSROM() {
+    var sromDate = $('srom-date').value;
+    var sromTime = $('srom-time').value;
+    var measureDate = $('measure-date').value;
+    var measureTime = $('measure-time').value;
+
+    var durationEl = $('srom-duration');
+    var minutesEl = $('srom-minutes');
+
+    if (!sromDate || !sromTime || !measureDate || !measureTime) {
+        durationEl.textContent = '—';
+        durationEl.classList.add('placeholder');
+        minutesEl.textContent = '—';
+        minutesEl.classList.add('placeholder');
+        return;
+    }
+
+    var sromDT = new Date(sromDate + 'T' + sromTime);
+    var measureDT = new Date(measureDate + 'T' + measureTime);
+
+    var diffMs = measureDT - sromDT;
+
+    if (diffMs < 0) {
+        durationEl.textContent = 'Invalid (measuring time is before SROM)';
+        durationEl.classList.add('placeholder');
+        minutesEl.textContent = '—';
+        minutesEl.classList.add('placeholder');
+        return;
+    }
+
+    var totalMinutes = Math.floor(diffMs / 60000);
+    var days = Math.floor(totalMinutes / 1440);
+    var hours = Math.floor((totalMinutes % 1440) / 60);
+    var mins = totalMinutes % 60;
+
+    var parts = [];
+    if (days > 0) parts.push(days + (days === 1 ? ' day' : ' days'));
+    if (hours > 0) parts.push(hours + (hours === 1 ? ' hr' : ' hrs'));
+    parts.push(mins + ' min');
+
+    durationEl.textContent = parts.join(' ');
+    durationEl.classList.remove('placeholder');
+    minutesEl.textContent = totalMinutes.toLocaleString() + ' min';
+    minutesEl.classList.remove('placeholder');
 }
 
 function updateAnalysis() {
